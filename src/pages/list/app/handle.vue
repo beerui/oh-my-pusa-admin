@@ -101,22 +101,22 @@
 <script lang="ts">
 export default {
   name: 'ListAppHandle',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
-import { useRoute } from 'vue-router';
-import { programAdd, tagList, categoryList } from '@/api/app';
+import { ref } from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { useRoute } from 'vue-router'
+import { programAdd, tagList, categoryList } from '@/api/app'
 
-const route = useRoute();
-const pageType = route.query.type;
+const route = useRoute()
+const pageType = route.query.type
 const FORM_RULES = {
   name: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
   descr: [
     { required: true, message: '次项必填', type: 'error', trigger: 'blur' },
-    { validator: (val) => val.length < 50, message: '不能超过 50 个字，中文长度等于英文长度' },
+    { validator: val => val.length < 50, message: '不能超过 50 个字，中文长度等于英文长度' },
   ],
   evaluation: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
   icon: [{ required: true }],
@@ -130,19 +130,19 @@ const FORM_RULES = {
   ],
   belong: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
   belongInfo: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
-};
+}
 /**
  * 类别 标签
  */
-const tags = ref([]);
-const categories = ref([]);
-tagList({ page: 1, size: 99 }).then((res) => {
-  tags.value = res.list;
-});
-categoryList({ page: 1, size: 99 }).then((res) => {
-  categories.value = res.list;
-});
-const filesIcon = ref([]);
+const tags = ref([])
+const categories = ref([])
+tagList({ page: 1, size: 99 }).then(res => {
+  tags.value = res.list
+})
+categoryList({ page: 1, size: 99 }).then(res => {
+  categories.value = res.list
+})
+const filesIcon = ref([])
 // const formData = reactive({
 //   name: '',
 //   descr: '',
@@ -169,28 +169,28 @@ const formData = {
   isEditorChoice: 1,
   categories: [3, 1],
   tags: [3, 13, 12, 14],
-};
+}
 const onReset = () => {
-  MessagePlugin.warning('取消新建');
-};
+  MessagePlugin.warning('取消新建')
+}
 const onSubmit = ({ validateResult }) => {
-  console.log('formData', formData);
+  console.log('formData', formData)
   if (filesIcon.value.length === 0) {
-    MessagePlugin.error('图标未传');
-    return;
+    MessagePlugin.error('图标未传')
+    return
   }
-  formData.icon = filesIcon.value[0].response.url;
+  formData.icon = filesIcon.value[0].response.url
   if (validateResult === true) {
     programAdd(formData)
-      .then((res) => {
-        console.log(res);
-        MessagePlugin.success('新建成功');
+      .then(res => {
+        console.log(res)
+        MessagePlugin.success('新建成功')
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch(err => {
+        console.log(err)
+      })
   }
-};
+}
 </script>
 
 <style lang="less" scoped></style>

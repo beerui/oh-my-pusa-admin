@@ -1,5 +1,5 @@
-import Layout from '@/layouts/index.vue';
-import ListIcon from '@/assets/assets-slide-list.svg';
+import Layout from '@/layouts/index.vue'
+import ListIcon from '@/assets/assets-slide-list.svg'
 
 export default [
   {
@@ -83,4 +83,4 @@ export default [
       },
     ],
   },
-];
+]

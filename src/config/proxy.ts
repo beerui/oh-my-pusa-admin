@@ -18,4 +18,4 @@ export default {
     // 正式环境 cdn 路径
     cdn: '',
   },
-};
+}

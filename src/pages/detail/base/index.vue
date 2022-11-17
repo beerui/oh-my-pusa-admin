@@ -30,7 +30,7 @@
 <script lang="ts">
 export default {
   name: 'DetailBase',
-};
+}
 </script>
 
 <script setup lang="ts">
@@ -111,7 +111,7 @@ const BASE_INFO_DATA = [
     value: '2020-12-22 10:00:00',
     type: null,
   },
-];
+]
 </script>
 
 <style lang="less" scoped>

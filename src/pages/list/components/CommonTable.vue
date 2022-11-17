@@ -113,12 +113,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
-import Trend from '@/components/trend/index.vue';
-import { getList } from '@/api/list';
-import { useSettingStore } from '@/store';
-import { prefix } from '@/config/global';
+import { ref, computed, onMounted } from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import Trend from '@/components/trend/index.vue'
+import { getList } from '@/api/list'
+import { useSettingStore } from '@/store'
+import { prefix } from '@/config/global'
 
 import {
   CONTRACT_STATUS,
@@ -126,9 +126,9 @@ import {
   CONTRACT_TYPES,
   CONTRACT_TYPE_OPTIONS,
   CONTRACT_PAYMENT_TYPES,
-} from '@/constants';
+} from '@/constants'
 
-const store = useSettingStore();
+const store = useSettingStore()
 
 const COLUMNS = [
   {
@@ -171,103 +171,103 @@ const COLUMNS = [
     colKey: 'op',
     title: '操作',
   },
-];
+]
 
 const searchForm = {
   name: '',
   no: undefined,
   status: undefined,
   type: '',
-};
+}
 
-const formData = ref({ ...searchForm });
-const rowKey = 'index';
-const verticalAlign = 'top';
-const hover = true;
+const formData = ref({ ...searchForm })
+const rowKey = 'index'
+const verticalAlign = 'top'
+const hover = true
 
 const pagination = ref({
   defaultPageSize: 20,
   total: 100,
   defaultCurrent: 1,
-});
-const confirmVisible = ref(false);
+})
+const confirmVisible = ref(false)
 
-const data = ref([]);
+const data = ref([])
 
-const dataLoading = ref(false);
+const dataLoading = ref(false)
 const fetchData = async () => {
-  dataLoading.value = true;
+  dataLoading.value = true
   try {
-    const { list } = await getList();
-    data.value = list;
+    const { list } = await getList()
+    data.value = list
     pagination.value = {
       ...pagination.value,
       total: list.length,
-    };
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    dataLoading.value = false;
+    dataLoading.value = false
   }
-};
+}
 
-const deleteIdx = ref(-1);
+const deleteIdx = ref(-1)
 const confirmBody = computed(() => {
   if (deleteIdx.value > -1) {
-    const { name } = data.value[deleteIdx.value];
-    return `删除后，${name}的所有合同信息将被清空，且无法恢复`;
+    const { name } = data.value[deleteIdx.value]
+    return `删除后，${name}的所有合同信息将被清空，且无法恢复`
   }
-  return '';
-});
+  return ''
+})
 
 const resetIdx = () => {
-  deleteIdx.value = -1;
-};
+  deleteIdx.value = -1
+}
 
 const onConfirmDelete = () => {
   // 真实业务请发起请求
-  data.value.splice(deleteIdx.value, 1);
-  pagination.value.total = data.value.length;
-  confirmVisible.value = false;
-  MessagePlugin.success('删除成功');
-  resetIdx();
-};
+  data.value.splice(deleteIdx.value, 1)
+  pagination.value.total = data.value.length
+  confirmVisible.value = false
+  MessagePlugin.success('删除成功')
+  resetIdx()
+}
 
 const onCancel = () => {
-  resetIdx();
-};
+  resetIdx()
+}
 
 onMounted(() => {
-  fetchData();
-});
+  fetchData()
+})
 
 const handleClickDelete = ({ row }) => {
-  deleteIdx.value = row.rowIndex;
-  confirmVisible.value = true;
-};
-const onReset = (val) => {
-  console.log(val);
-};
-const onSubmit = (val) => {
-  console.log(val);
-};
+  deleteIdx.value = row.rowIndex
+  confirmVisible.value = true
+}
+const onReset = val => {
+  console.log(val)
+}
+const onSubmit = val => {
+  console.log(val)
+}
 const rehandlePageChange = (curr, pageInfo) => {
-  console.log('分页变化', curr, pageInfo);
-};
+  console.log('分页变化', curr, pageInfo)
+}
 const rehandleChange = (changeParams, triggerAndData) => {
-  console.log('统一Change', changeParams, triggerAndData);
-};
+  console.log('统一Change', changeParams, triggerAndData)
+}
 const rehandleClickOp = ({ text, row }) => {
-  console.log(text, row);
-};
+  console.log(text, row)
+}
 
 const offsetTop = computed(() => {
-  return store.isUseTabsRouter ? 48 : 0;
-});
+  return store.isUseTabsRouter ? 48 : 0
+})
 
 const getContainer = () => {
-  return document.querySelector(`.${prefix}-layout`);
-};
+  return document.querySelector(`.${prefix}-layout`)
+}
 </script>
 
 <style lang="less" scoped>

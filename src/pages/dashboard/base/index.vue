@@ -14,14 +14,14 @@
 <script lang="ts">
 export default {
   name: 'DashboardBase',
-};
+}
 </script>
 
 <script setup lang="ts">
-import TopPanel from './components/TopPanel.vue';
-import MiddleChart from './components/MiddleChart.vue';
-import RankList from './components/RankList.vue';
-import OutputOverview from './components/OutputOverview.vue';
+import TopPanel from './components/TopPanel.vue'
+import MiddleChart from './components/MiddleChart.vue'
+import RankList from './components/RankList.vue'
+import OutputOverview from './components/OutputOverview.vue'
 </script>
 
 <style scoped>

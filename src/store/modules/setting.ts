@@ -1,69 +1,69 @@
-import { defineStore } from 'pinia';
-import keys from 'lodash/keys';
-import { COLOR_TOKEN, LIGHT_CHART_COLORS, DARK_CHART_COLORS, TColorSeries } from '@/config/color';
-import STYLE_CONFIG from '@/config/style';
-import { store } from '@/store';
+import { defineStore } from 'pinia'
+import keys from 'lodash/keys'
+import { COLOR_TOKEN, LIGHT_CHART_COLORS, DARK_CHART_COLORS, TColorSeries } from '@/config/color'
+import STYLE_CONFIG from '@/config/style'
+import { store } from '@/store'
 
 const state = {
   ...STYLE_CONFIG,
   showSettingPanel: false,
   colorList: COLOR_TOKEN,
   chartColors: LIGHT_CHART_COLORS,
-};
+}
 
-export type TState = typeof state;
+export type TState = typeof state
 
 export const useSettingStore = defineStore('setting', {
   state: () => state,
   getters: {
-    showSidebar: (state) => state.layout !== 'top',
-    showSidebarLogo: (state) => state.layout === 'side',
-    showHeaderLogo: (state) => state.layout !== 'side',
-    displayMode: (state) => {
+    showSidebar: state => state.layout !== 'top',
+    showSidebarLogo: state => state.layout === 'side',
+    showHeaderLogo: state => state.layout !== 'side',
+    displayMode: state => {
       if (state.mode === 'auto') {
-        const media = window.matchMedia('(prefers-color-scheme:dark)');
+        const media = window.matchMedia('(prefers-color-scheme:dark)')
         if (media.matches) {
-          return 'dark';
+          return 'dark'
         }
-        return 'light';
+        return 'light'
       }
-      return state.mode;
+      return state.mode
     },
   },
   actions: {
     async changeMode(mode: 'dark' | 'light' | 'auto') {
-      let theme = mode;
+      let theme = mode
 
       if (mode === 'auto') {
-        const media = window.matchMedia('(prefers-color-scheme:dark)');
+        const media = window.matchMedia('(prefers-color-scheme:dark)')
         if (media.matches) {
-          theme = 'dark';
+          theme = 'dark'
         } else {
-          theme = 'light';
+          theme = 'light'
         }
       }
-      const isDarkMode = theme === 'dark';
+      const isDarkMode = theme === 'dark'
 
-      document.documentElement.setAttribute('theme-mode', isDarkMode ? 'dark' : '');
+      document.documentElement.setAttribute('theme-mode', isDarkMode ? 'dark' : '')
 
-      this.chartColors = isDarkMode ? DARK_CHART_COLORS : LIGHT_CHART_COLORS;
+      this.chartColors = isDarkMode ? DARK_CHART_COLORS : LIGHT_CHART_COLORS
     },
     changeBrandTheme(brandTheme: string) {
-      document.documentElement.setAttribute('theme-color', brandTheme);
+      document.documentElement.setAttribute('theme-color', brandTheme)
     },
     addColor(payload: TColorSeries) {
-      this.colorList = { ...this.colorList, ...payload };
+      this.colorList = { ...this.colorList, ...payload }
     },
     updateConfig(payload: Partial<TState>) {
       for (const key in payload) {
         if (payload[key] !== undefined) {
-          this[key] = payload[key];
+          this[key] = payload[key]
         }
         if (key === 'mode') {
-          this.changeMode(payload[key]);
+          this.changeMode(payload[key])
         }
         if (key === 'brandTheme') {
-          this.changeBrandTheme(payload[key]);
+          this.changeBrandTheme(payload[key])
         }
       }
     },
@@ -71,8 +71,8 @@ export const useSettingStore = defineStore('setting', {
   persist: {
     paths: [...keys(STYLE_CONFIG), 'colorList', 'chartColors'],
   },
-});
+})
 
 export function getSettingStore() {
-  return useSettingStore(store);
+  return useSettingStore(store)
 }

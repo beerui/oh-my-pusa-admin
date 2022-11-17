@@ -46,34 +46,34 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-import { storeToRefs } from 'pinia';
-import { useNotificationStore } from '@/store';
-import { NotificationItem } from '@/types/interface';
+import { useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useNotificationStore } from '@/store'
+import { NotificationItem } from '@/types/interface'
 
-const router = useRouter();
-const store = useNotificationStore();
-const { msgData, unreadMsg } = storeToRefs(store);
+const router = useRouter()
+const store = useNotificationStore()
+const { msgData, unreadMsg } = storeToRefs(store)
 
 const setRead = (type: string, item?: NotificationItem) => {
-  const changeMsg = msgData.value;
+  const changeMsg = msgData.value
   if (type === 'all') {
-    changeMsg.forEach((e) => {
-      e.status = false;
-    });
+    changeMsg.forEach(e => {
+      e.status = false
+    })
   } else {
-    changeMsg.forEach((e) => {
+    changeMsg.forEach(e => {
       if (e.id === item?.id) {
-        e.status = false;
+        e.status = false
       }
-    });
+    })
   }
-  store.setMsgData(changeMsg);
-};
+  store.setMsgData(changeMsg)
+}
 
 const goDetail = () => {
-  router.push('/detail/secondary');
-};
+  router.push('/detail/secondary')
+}
 </script>
 
 <style lang="less" scoped>

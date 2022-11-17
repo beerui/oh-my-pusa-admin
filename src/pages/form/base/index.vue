@@ -160,42 +160,42 @@
 <script lang="ts">
 export default {
   name: 'FormBase',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
-import { FORM_RULES, INITIAL_DATA, TYPE_OPTIONS, PARTY_A_OPTIONS, PARTY_B_OPTIONS } from './constants';
+import { ref } from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { FORM_RULES, INITIAL_DATA, TYPE_OPTIONS, PARTY_A_OPTIONS, PARTY_B_OPTIONS } from './constants'
 
-const formData = ref({ ...INITIAL_DATA });
+const formData = ref({ ...INITIAL_DATA })
 
 const onReset = () => {
-  MessagePlugin.warning('取消新建');
-};
+  MessagePlugin.warning('取消新建')
+}
 const onSubmit = ({ validateResult }) => {
   if (validateResult === true) {
-    MessagePlugin.success('新建成功');
+    MessagePlugin.success('新建成功')
   }
-};
-const beforeUpload = (file) => {
+}
+const beforeUpload = file => {
   if (!/\.(pdf)$/.test(file.name)) {
-    MessagePlugin.warning('请上传pdf文件');
-    return false;
+    MessagePlugin.warning('请上传pdf文件')
+    return false
   }
   if (file.size > 60 * 1024 * 1024) {
-    MessagePlugin.warning('上传文件不能大于60M');
-    return false;
+    MessagePlugin.warning('上传文件不能大于60M')
+    return false
   }
-  return true;
-};
+  return true
+}
 const handleFail = ({ file }) => {
-  MessagePlugin.error(`文件 ${file.name} 上传失败`);
-};
+  MessagePlugin.error(`文件 ${file.name} 上传失败`)
+}
 // 用于格式化接口响应值，error 会被用于上传失败的提示文字；url 表示文件/图片地址
-const formatResponse = (res) => {
-  return { ...res, error: '上传失败，请重试', url: res.url };
-};
+const formatResponse = res => {
+  return { ...res, error: '上传失败，请重试', url: res.url }
+}
 </script>
 
 <style lang="less" scoped>

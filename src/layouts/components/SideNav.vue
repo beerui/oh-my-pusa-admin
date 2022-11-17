@@ -16,19 +16,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, PropType } from 'vue';
-import { useRouter } from 'vue-router';
-import union from 'lodash/union';
+import { computed, onMounted, PropType } from 'vue'
+import { useRouter } from 'vue-router'
+import union from 'lodash/union'
 
-import { useSettingStore } from '@/store';
-import { prefix } from '@/config/global';
-import pgk from '../../../package.json';
-import { MenuRoute } from '@/types/interface';
-import { getActive, getRoutesExpanded } from '@/router';
+import { useSettingStore } from '@/store'
+import { prefix } from '@/config/global'
+import pgk from '../../../package.json'
+import { MenuRoute } from '@/types/interface'
+import { getActive, getRoutesExpanded } from '@/router'
 
-import MenuContent from './MenuContent.vue';
+import MenuContent from './MenuContent.vue'
 
-const MIN_POINT = 992 - 1;
+const MIN_POINT = 992 - 1
 
 const props = defineProps({
   menu: {
@@ -59,31 +59,31 @@ const props = defineProps({
     type: Boolean as PropType<boolean>,
     default: false,
   },
-});
+})
 
-const collapsed = computed(() => useSettingStore().isSidebarCompact);
+const collapsed = computed(() => useSettingStore().isSidebarCompact)
 
-const active = computed(() => getActive());
+const active = computed(() => getActive())
 
 const defaultExpanded = computed(() => {
-  const path = getActive();
-  const parentPath = path.substring(0, path.lastIndexOf('/'));
-  const expanded = getRoutesExpanded();
-  return union(expanded, parentPath === '' ? [] : [parentPath]);
-});
+  const path = getActive()
+  const parentPath = path.substring(0, path.lastIndexOf('/'))
+  const expanded = getRoutesExpanded()
+  return union(expanded, parentPath === '' ? [] : [parentPath])
+})
 
 const sideNavCls = computed(() => {
-  const { isCompact } = props;
+  const { isCompact } = props
   return [
     `${prefix}-sidebar-layout`,
     {
       [`${prefix}-sidebar-compact`]: isCompact,
     },
-  ];
-});
+  ]
+})
 
 const menuCls = computed(() => {
-  const { showLogo, isFixed, layout } = props;
+  const { showLogo, isFixed, layout } = props
   return [
     `${prefix}-side-nav`,
     {
@@ -91,29 +91,29 @@ const menuCls = computed(() => {
       [`${prefix}-side-nav-no-fixed`]: !isFixed,
       [`${prefix}-side-nav-mix-fixed`]: layout === 'mix' && isFixed,
     },
-  ];
-});
+  ]
+})
 
-const router = useRouter();
-const settingStore = useSettingStore();
+const router = useRouter()
+const settingStore = useSettingStore()
 
 const autoCollapsed = () => {
-  const isCompact = window.innerWidth <= MIN_POINT;
+  const isCompact = window.innerWidth <= MIN_POINT
   settingStore.updateConfig({
     isSidebarCompact: isCompact,
-  });
-};
+  })
+}
 
 onMounted(() => {
-  autoCollapsed();
+  autoCollapsed()
   window.onresize = () => {
-    autoCollapsed();
-  };
-});
+    autoCollapsed()
+  }
+})
 
 const goHome = () => {
-  router.push('/dashboard/base');
-};
+  router.push('/dashboard/base')
+}
 </script>
 
 <style lang="less" scoped>

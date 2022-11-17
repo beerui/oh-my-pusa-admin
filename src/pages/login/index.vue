@@ -18,12 +18,12 @@
 <script lang="ts">
 export default {
   name: 'LoginIndex',
-};
+}
 </script>
 <script setup lang="ts">
-import Login from './components/Login.vue';
-import LoginHeader from './components/Header.vue';
-import TdesignSetting from '@/layouts/setting.vue';
+import Login from './components/Login.vue'
+import LoginHeader from './components/Header.vue'
+import TdesignSetting from '@/layouts/setting.vue'
 </script>
 
 <style lang="less" scoped>

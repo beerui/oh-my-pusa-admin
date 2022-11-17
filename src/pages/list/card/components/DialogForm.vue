@@ -35,8 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { ref, watch } from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next'
 
 const INITIAL_DATA = {
   name: '',
@@ -45,13 +45,13 @@ const INITIAL_DATA = {
   type: '',
   mark: '',
   amount: 0,
-};
+}
 
 const SELECT_OPTIONS = [
   { label: '网关', value: '1' },
   { label: '人工智能', value: '2' },
   { label: 'CVM', value: '3' },
-];
+]
 
 const props = defineProps({
   visible: {
@@ -61,53 +61,53 @@ const props = defineProps({
   data: {
     type: Object,
     default: () => {
-      return {};
+      return {}
     },
   },
-});
+})
 
-const formVisible = ref(false);
-const formData = ref(props.data);
-const textareaValue = ref('');
+const formVisible = ref(false)
+const formData = ref(props.data)
+const textareaValue = ref('')
 
 const onSubmit = ({ result, firstError }) => {
   if (!firstError) {
-    MessagePlugin.success('提交成功');
-    formVisible.value = false;
+    MessagePlugin.success('提交成功')
+    formVisible.value = false
   } else {
-    console.log('Errors: ', result);
-    MessagePlugin.warning(firstError);
+    console.log('Errors: ', result)
+    MessagePlugin.warning(firstError)
   }
-};
+}
 
 const onClickCloseBtn = () => {
-  formVisible.value = false;
-  formData.value = { ...INITIAL_DATA };
-};
+  formVisible.value = false
+  formData.value = { ...INITIAL_DATA }
+}
 
-const emit = defineEmits(['update:visible']);
+const emit = defineEmits(['update:visible'])
 watch(
   () => formVisible.value,
-  (val) => {
-    emit('update:visible', val);
-  },
-);
+  val => {
+    emit('update:visible', val)
+  }
+)
 
 watch(
   () => props.visible,
-  (val) => {
-    formVisible.value = val;
-  },
-);
+  val => {
+    formVisible.value = val
+  }
+)
 
 watch(
   () => props.data,
-  (val) => {
-    formData.value = val;
-  },
-);
+  val => {
+    formData.value = val
+  }
+)
 
 const rules = {
   name: [{ required: true, message: '请输入产品名称', type: 'error' }],
-};
+}
 </script>

@@ -45,12 +45,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import { FormInstanceFunctions, MessagePlugin } from 'tdesign-vue-next';
-import { useUserStore } from '@/store';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { FormInstanceFunctions, MessagePlugin } from 'tdesign-vue-next'
+import { useUserStore } from '@/store'
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const INITIAL_DATA = {
   phone: '',
@@ -58,38 +58,38 @@ const INITIAL_DATA = {
   password: '20221111',
   verifyCode: '',
   checked: false,
-};
+}
 
 const FORM_RULES = {
   phone: [{ required: true, message: '手机号必填', type: 'error' }],
   account: [{ required: true, message: '账号必填', type: 'error' }],
   password: [{ required: true, message: '密码必填', type: 'error' }],
   verifyCode: [{ required: true, message: '验证码必填', type: 'error' }],
-};
+}
 
-const type = ref('password');
+const type = ref('password')
 
-const form = ref<FormInstanceFunctions>();
-const formData = ref({ ...INITIAL_DATA });
-const showPsw = ref(false);
+const form = ref<FormInstanceFunctions>()
+const formData = ref({ ...INITIAL_DATA })
+const showPsw = ref(false)
 
-const router = useRouter();
+const router = useRouter()
 
 const onSubmit = async ({ validateResult }) => {
   if (validateResult === true) {
     try {
-      await userStore.login(formData.value);
+      await userStore.login(formData.value)
 
-      MessagePlugin.success('登陆成功');
+      MessagePlugin.success('登陆成功')
       router.push({
         path: '/dashboard/base',
-      });
+      })
     } catch (e) {
-      console.log(e);
-      MessagePlugin.error(e.message);
+      console.log(e)
+      MessagePlugin.error(e.message)
     }
   }
-};
+}
 </script>
 
 <style lang="less" scoped>

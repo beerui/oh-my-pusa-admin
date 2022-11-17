@@ -63,95 +63,95 @@
 <script lang="ts">
 export default {
   name: 'DashboardBase',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { onMounted, watch, ref, onUnmounted, nextTick, computed } from 'vue';
+import { onMounted, watch, ref, onUnmounted, nextTick, computed } from 'vue'
 
-import * as echarts from 'echarts/core';
-import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
-import { LineChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import { useSettingStore } from '@/store';
-import { LAST_7_DAYS } from '@/utils/date';
-import { changeChartsTheme } from '@/utils/color';
+import * as echarts from 'echarts/core'
+import { TooltipComponent, LegendComponent, GridComponent } from 'echarts/components'
+import { LineChart } from 'echarts/charts'
+import { CanvasRenderer } from 'echarts/renderers'
+import { useSettingStore } from '@/store'
+import { LAST_7_DAYS } from '@/utils/date'
+import { changeChartsTheme } from '@/utils/color'
 
 // 导入样式
-import Trend from '@/components/trend/index.vue';
-import { constructInitDataset } from '../index';
+import Trend from '@/components/trend/index.vue'
+import { constructInitDataset } from '../index'
 
-echarts.use([TooltipComponent, LegendComponent, GridComponent, LineChart, CanvasRenderer]);
+echarts.use([TooltipComponent, LegendComponent, GridComponent, LineChart, CanvasRenderer])
 
-const store = useSettingStore();
-const resizeTime = ref(1);
+const store = useSettingStore()
+const resizeTime = ref(1)
 
-const chartColors = computed(() => store.chartColors);
+const chartColors = computed(() => store.chartColors)
 
 // stokeCharts
-let stokeContainer: HTMLElement;
-let stokeChart: echarts.ECharts;
+let stokeContainer: HTMLElement
+let stokeChart: echarts.ECharts
 const renderStokeChart = () => {
   if (!stokeContainer) {
-    stokeContainer = document.getElementById('stokeContainer');
+    stokeContainer = document.getElementById('stokeContainer')
   }
-  stokeChart = echarts.init(stokeContainer);
-  stokeChart.setOption(constructInitDataset({ dateTime: LAST_7_DAYS, ...chartColors.value }));
-};
+  stokeChart = echarts.init(stokeContainer)
+  stokeChart.setOption(constructInitDataset({ dateTime: LAST_7_DAYS, ...chartColors.value }))
+}
 
 const renderCharts = () => {
-  renderStokeChart();
-};
+  renderStokeChart()
+}
 
 // chartSize update
 const updateContainer = () => {
   if (document.documentElement.clientWidth >= 1400 && document.documentElement.clientWidth < 1920) {
-    resizeTime.value = Number((document.documentElement.clientWidth / 2080).toFixed(2));
+    resizeTime.value = Number((document.documentElement.clientWidth / 2080).toFixed(2))
   } else if (document.documentElement.clientWidth < 1080) {
-    resizeTime.value = Number((document.documentElement.clientWidth / 1080).toFixed(2));
+    resizeTime.value = Number((document.documentElement.clientWidth / 1080).toFixed(2))
   } else {
-    resizeTime.value = 1;
+    resizeTime.value = 1
   }
 
   stokeChart.resize({
     width: stokeContainer.clientWidth,
     height: stokeContainer.clientHeight,
-  });
-};
+  })
+}
 
 onMounted(() => {
-  renderCharts();
+  renderCharts()
   nextTick(() => {
-    updateContainer();
-  });
-  window.addEventListener('resize', updateContainer, false);
-});
+    updateContainer()
+  })
+  window.addEventListener('resize', updateContainer, false)
+})
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateContainer);
-});
+  window.removeEventListener('resize', updateContainer)
+})
 
 watch(
   () => store.brandTheme,
   () => {
-    changeChartsTheme([stokeChart]);
-  },
-);
+    changeChartsTheme([stokeChart])
+  }
+)
 
 watch(
   () => store.mode,
   () => {
-    [stokeChart].forEach((item) => {
-      item.dispose();
-    });
+    ;[stokeChart].forEach(item => {
+      item.dispose()
+    })
 
-    renderCharts();
-  },
-);
+    renderCharts()
+  }
+)
 
 const onStokeDataChange = (checkedValues: string[]) => {
-  stokeChart.setOption(constructInitDataset({ dateTime: checkedValues, ...chartColors.value }));
-};
+  stokeChart.setOption(constructInitDataset({ dateTime: checkedValues, ...chartColors.value }))
+}
 </script>
 
 <style lang="less" scoped>

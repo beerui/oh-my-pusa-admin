@@ -79,7 +79,7 @@ export const BASE_INFO_DATA = [
     value: 'istio_test',
     type: null,
   },
-];
+]
 
 export const TABLE_COLUMNS = [
   {
@@ -112,4 +112,4 @@ export const TABLE_COLUMNS = [
     fixed: 'right',
     title: '操作',
   },
-];
+]

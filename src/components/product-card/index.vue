@@ -55,7 +55,7 @@
   </t-card>
 </template>
 <script setup lang="ts">
-import { PropType } from 'vue';
+import { PropType } from 'vue'
 import {
   ShopIcon,
   CalendarIcon,
@@ -64,13 +64,13 @@ import {
   LaptopIcon,
   MoreIcon,
   AddIcon,
-} from 'tdesign-icons-vue-next';
+} from 'tdesign-icons-vue-next'
 
 export interface CardProductType {
-  type: number;
-  isSetup: boolean;
-  description: string;
-  name: string;
+  type: number
+  isSetup: boolean
+  description: string
+  name: string
 }
 
 // eslint-disable-next-line
@@ -78,19 +78,19 @@ const props = defineProps({
   product: {
     type: Object as PropType<CardProductType>,
   },
-});
+})
 
-const emit = defineEmits(['manage-product', 'delete-item']);
+const emit = defineEmits(['manage-product', 'delete-item'])
 
-const typeMap = ['A', 'B', 'C', 'D', 'E'];
+const typeMap = ['A', 'B', 'C', 'D', 'E']
 
 const handleClickManage = (product: CardProductType) => {
-  emit('manage-product', product);
-};
+  emit('manage-product', product)
+}
 
 const handleClickDelete = (product: CardProductType) => {
-  emit('delete-item', product);
-};
+  emit('delete-item', product)
+}
 </script>
 
 <style lang="less" scoped>

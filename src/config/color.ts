@@ -1,8 +1,8 @@
 /* eslint-disable indent */
-import { Color } from 'tvision-color';
+import { Color } from 'tvision-color'
 
-export type TColorToken = Record<string, string>;
-export type TColorSeries = Record<string, TColorToken>;
+export type TColorToken = Record<string, string>
+export type TColorSeries = Record<string, TColorToken>
 
 export const defaultLightColor = [
   '#0052d9',
@@ -13,17 +13,8 @@ export const defaultLightColor = [
   '#e34d59',
   '#ed49b4',
   '#834ec2',
-];
-export const defaultDarkColor = [
-  '#4582e6',
-  '#29a4fb',
-  '#03a56f',
-  '#ca8d03',
-  '#ed7b2f',
-  '#ea7b84',
-  '#f172c5',
-  '#ab87d5',
-];
+]
+export const defaultDarkColor = ['#4582e6', '#29a4fb', '#03a56f', '#ca8d03', '#ed7b2f', '#ea7b84', '#f172c5', '#ab87d5']
 
 export const COLOR_TOKEN: TColorSeries = {
   DEFAULT: {
@@ -131,52 +122,52 @@ export const COLOR_TOKEN: TColorSeries = {
     '--td-brand-color-9': '#dda204',
     '--td-brand-color-10': '#603100',
   },
-};
+}
 
 export const LIGHT_CHART_COLORS = {
   textColor: 'rgba(0, 0, 0, 0.9)',
   placeholderColor: 'rgba(0, 0, 0, 0.35)',
   borderColor: '#dcdcdc',
   containerColor: '#fff',
-};
+}
 
 export const DARK_CHART_COLORS = {
   textColor: 'rgba(255, 255, 255, 0.9)',
   placeholderColor: 'rgba(255, 255, 255, 0.35)',
   borderColor: '#5e5e5e',
   containerColor: '#242424',
-};
+}
 
-export type TChartColor = typeof LIGHT_CHART_COLORS;
+export type TChartColor = typeof LIGHT_CHART_COLORS
 
 function toUnderline(name: string): string {
-  return name.replace(/([A-Z])/g, '_$1').toUpperCase();
+  return name.replace(/([A-Z])/g, '_$1').toUpperCase()
 }
 
 export function getBrandColor(type: string, colorList: TColorSeries): TColorToken {
-  const name = /^#[A-F\d]{6}$/i.test(type) ? type : toUnderline(type);
-  return colorList[name || 'DEFAULT'];
+  const name = /^#[A-F\d]{6}$/i.test(type) ? type : toUnderline(type)
+  return colorList[name || 'DEFAULT']
 }
 
 export function getColorList(colorArray: Array<TColorToken>): Array<string> {
-  const pureColorList = [];
-  colorArray.map((colorToken) => Object.keys(colorToken).map((key) => pureColorList.push(colorToken[key])));
+  const pureColorList = []
+  colorArray.map(colorToken => Object.keys(colorToken).map(key => pureColorList.push(colorToken[key])))
 
-  return pureColorList;
+  return pureColorList
 }
 
 export function generateColorMap(theme: string, colorPalette: Array<string>, mode: 'light' | 'dark') {
-  const isDarkMode = mode === 'dark';
-  let brandColorIdx = colorPalette.indexOf(theme);
+  const isDarkMode = mode === 'dark'
+  let brandColorIdx = colorPalette.indexOf(theme)
 
   if (isDarkMode) {
     // eslint-disable-next-line no-use-before-define
-    colorPalette.reverse().map((color) => {
-      const [h, s, l] = Color.colorTransform(color, 'hex', 'hsl');
-      return Color.colorTransform([h, Number(s) - 4, l], 'hsl', 'hex');
-    });
-    brandColorIdx = 5;
-    colorPalette[0] = `${colorPalette[brandColorIdx]}20`;
+    colorPalette.reverse().map(color => {
+      const [h, s, l] = Color.colorTransform(color, 'hex', 'hsl')
+      return Color.colorTransform([h, Number(s) - 4, l], 'hsl', 'hex')
+    })
+    brandColorIdx = 5
+    colorPalette[0] = `${colorPalette[brandColorIdx]}20`
   }
 
   const colorMap = {
@@ -191,15 +182,15 @@ export function generateColorMap(theme: string, colorPalette: Array<string>, mod
     '--td-brand-color-8': colorPalette[brandColorIdx], // 主题色
     '--td-brand-color-9': brandColorIdx > 8 ? theme : colorPalette[brandColorIdx + 1], // click
     '--td-brand-color-10': colorPalette[9],
-  };
-  return colorMap;
+  }
+  return colorMap
 }
 export function insertThemeStylesheet(theme: string, colorMap: TColorToken, mode: 'light' | 'dark') {
-  const isDarkMode = mode === 'dark';
-  const root = !isDarkMode ? `:root[theme-color='${theme}']` : `:root[theme-color='${theme}'][theme-mode='dark']`;
+  const isDarkMode = mode === 'dark'
+  const root = !isDarkMode ? `:root[theme-color='${theme}']` : `:root[theme-color='${theme}'][theme-mode='dark']`
 
-  const styleSheet = document.createElement('style');
-  styleSheet.type = 'text/css';
+  const styleSheet = document.createElement('style')
+  styleSheet.type = 'text/css'
   styleSheet.innerText = `${root}{
     --td-brand-color: ${colorMap['--td-brand-color']};
     --td-brand-color-1: ${colorMap['--td-brand-color-1']};
@@ -212,7 +203,7 @@ export function insertThemeStylesheet(theme: string, colorMap: TColorToken, mode
     --td-brand-color-8: ${colorMap['--td-brand-color-8']};
     --td-brand-color-9: ${colorMap['--td-brand-color-9']};
     --td-brand-color-10: ${colorMap['--td-brand-color-10']};
-  }`;
+  }`
 
-  document.head.appendChild(styleSheet);
+  document.head.appendChild(styleSheet)
 }

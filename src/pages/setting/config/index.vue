@@ -71,24 +71,24 @@
 <script lang="ts">
 export default {
   name: 'FormBase',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
-import { FORM_RULES, INITIAL_DATA } from './constants';
+import { ref } from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next'
+import { FORM_RULES, INITIAL_DATA } from './constants'
 
-const formData = ref({ ...INITIAL_DATA });
+const formData = ref({ ...INITIAL_DATA })
 
 const onReset = () => {
-  MessagePlugin.warning('取消新建');
-};
+  MessagePlugin.warning('取消新建')
+}
 const onSubmit = ({ validateResult }) => {
   if (validateResult === true) {
-    MessagePlugin.success('新建成功');
+    MessagePlugin.success('新建成功')
   }
-};
+}
 </script>
 
 <style lang="less" scoped>

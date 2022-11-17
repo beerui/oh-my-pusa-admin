@@ -44,136 +44,136 @@
 <script lang="ts">
 export default {
   name: 'ListCategory',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, reactive } from 'vue';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { ref, onMounted, computed, reactive } from 'vue'
+import { MessagePlugin } from 'tdesign-vue-next'
 
-import { useSettingStore } from '@/store';
-import { prefix } from '@/config/global';
+import { useSettingStore } from '@/store'
+import { prefix } from '@/config/global'
 
-import { COLUMNS } from './constants';
-import { categoryAdd, categoryDel, categoryList, categoryUpdate } from '@/api/app';
+import { COLUMNS } from './constants'
+import { categoryAdd, categoryDel, categoryList, categoryUpdate } from '@/api/app'
 
-const store = useSettingStore();
+const store = useSettingStore()
 
-const data = ref([]);
+const data = ref([])
 const pagination = ref({
   defaultPageSize: 20,
   pageSize: 20,
   current: 1,
   total: 0,
   defaultCurrent: 1,
-});
+})
 
-const dataLoading = ref(false);
+const dataLoading = ref(false)
 const fetchData = async () => {
-  dataLoading.value = true;
+  dataLoading.value = true
   try {
     const { list, total } = await categoryList({
       page: pagination.value.current,
       size: pagination.value.pageSize,
-    });
-    data.value = list;
+    })
+    data.value = list
     pagination.value = {
       ...pagination.value,
       total,
-    };
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    dataLoading.value = false;
+    dataLoading.value = false
   }
-};
+}
 
-const chooseId = ref(-1);
+const chooseId = ref(-1)
 const confirmBody = computed(() => {
   if (chooseId.value > -1) {
-    return `删除确认？`;
+    return `删除确认？`
   }
-  return '';
-});
+  return ''
+})
 
 onMounted(() => {
-  fetchData();
-});
+  fetchData()
+})
 
-const confirmVisible = ref(false);
+const confirmVisible = ref(false)
 
 const resetIdx = () => {
-  chooseId.value = -1;
-};
+  chooseId.value = -1
+}
 
 const onConfirmDelete = async () => {
   // 真实业务请发起请求
   if (chooseId.value !== -1) {
-    await categoryDel(chooseId.value);
-    fetchData();
-    MessagePlugin.success('删除成功');
-    confirmVisible.value = false;
+    await categoryDel(chooseId.value)
+    fetchData()
+    MessagePlugin.success('删除成功')
+    confirmVisible.value = false
   }
-  resetIdx();
-};
+  resetIdx()
+}
 
-const renameVisible = ref(false);
+const renameVisible = ref(false)
 const onConfirmRename = async () => {
   // 真实业务请发起请求
   if (chooseId.value !== -1) {
-    await categoryUpdate({ id: chooseId.value, name: addForm.name });
-    fetchData();
-    MessagePlugin.success('修改成功');
-    renameVisible.value = false;
-    addForm.name = '';
+    await categoryUpdate({ id: chooseId.value, name: addForm.name })
+    fetchData()
+    MessagePlugin.success('修改成功')
+    renameVisible.value = false
+    addForm.name = ''
   }
-  resetIdx();
-};
+  resetIdx()
+}
 
 const onCancel = () => {
-  resetIdx();
-};
+  resetIdx()
+}
 
-const rowKey = 'id';
+const rowKey = 'id'
 
-const rehandlePageChange = (curr) => {
+const rehandlePageChange = curr => {
   // console.log('分页变化', curr, pageInfo);
-  pagination.value = { ...curr };
-};
+  pagination.value = { ...curr }
+}
 const rehandleChange = () => {
   // console.log('统一Change', changeParams, triggerAndData);
-  fetchData();
-};
+  fetchData()
+}
 /**
  * 新增
  */
-const addForm = reactive({ name: '' });
+const addForm = reactive({ name: '' })
 const handleAdd = async () => {
   if (!addForm.name) {
-    MessagePlugin.error('无内容');
-    return;
+    MessagePlugin.error('无内容')
+    return
   }
-  await categoryAdd(addForm);
-  MessagePlugin.success('新增成功');
-  addForm.name = '';
-  fetchData();
-};
+  await categoryAdd(addForm)
+  MessagePlugin.success('新增成功')
+  addForm.name = ''
+  fetchData()
+}
 const handleClickDelete = (row: { row: any; rowIndex: any }) => {
-  chooseId.value = row.row.id;
-  confirmVisible.value = true;
-};
+  chooseId.value = row.row.id
+  confirmVisible.value = true
+}
 const handleClickRename = (row: { row: any; rowIndex: any }) => {
-  chooseId.value = row.row.id;
-  renameVisible.value = true;
-};
+  chooseId.value = row.row.id
+  renameVisible.value = true
+}
 
 const offsetTop = computed(() => {
-  return store.isUseTabsRouter ? 48 : 0;
-});
+  return store.isUseTabsRouter ? 48 : 0
+})
 
 const getContainer = () => {
-  return document.querySelector(`.${prefix}-layout`);
-};
+  return document.querySelector(`.${prefix}-layout`)
+}
 </script>
 
 <style lang="less" scoped>

@@ -66,117 +66,117 @@
 <script lang="ts">
 export default {
   name: 'ListApp',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { SearchIcon } from 'tdesign-icons-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
+import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { SearchIcon } from 'tdesign-icons-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
 
-import { CONTRACT_STATUS, CONTRACT_TYPES, CONTRACT_PAYMENT_TYPES } from '@/constants';
-import Trend from '@/components/trend/index.vue';
-import { useSettingStore } from '@/store';
-import { prefix } from '@/config/global';
+import { CONTRACT_STATUS, CONTRACT_TYPES, CONTRACT_PAYMENT_TYPES } from '@/constants'
+import Trend from '@/components/trend/index.vue'
+import { useSettingStore } from '@/store'
+import { prefix } from '@/config/global'
 
-import { COLUMNS } from './constants';
-import { programList } from '@/api/app';
+import { COLUMNS } from './constants'
+import { programList } from '@/api/app'
 
-const store = useSettingStore();
+const store = useSettingStore()
 
-const data = ref([]);
+const data = ref([])
 const pagination = ref({
   defaultPageSize: 20,
   total: 100,
   defaultCurrent: 1,
-});
+})
 
-const searchValue = ref('');
+const searchValue = ref('')
 
-const dataLoading = ref(false);
+const dataLoading = ref(false)
 const fetchData = async () => {
-  dataLoading.value = true;
+  dataLoading.value = true
   try {
-    const { list, total } = await programList({ page: 1, size: pagination.value.defaultPageSize });
-    data.value = list;
+    const { list, total } = await programList({ page: 1, size: pagination.value.defaultPageSize })
+    data.value = list
     pagination.value = {
       ...pagination.value,
       total,
-    };
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    dataLoading.value = false;
+    dataLoading.value = false
   }
-};
+}
 
-const deleteIdx = ref(-1);
+const deleteIdx = ref(-1)
 const confirmBody = computed(() => {
   if (deleteIdx.value > -1) {
-    const { name } = data.value[deleteIdx.value];
-    return `删除后，${name}的所有合同信息将被清空，且无法恢复`;
+    const { name } = data.value[deleteIdx.value]
+    return `删除后，${name}的所有合同信息将被清空，且无法恢复`
   }
-  return '';
-});
+  return ''
+})
 
 onMounted(() => {
-  fetchData();
-});
+  fetchData()
+})
 
-const confirmVisible = ref(false);
+const confirmVisible = ref(false)
 
-const selectedRowKeys = ref([1, 2]);
+const selectedRowKeys = ref([1, 2])
 
-const router = useRouter();
+const router = useRouter()
 
 const resetIdx = () => {
-  deleteIdx.value = -1;
-};
+  deleteIdx.value = -1
+}
 
 const onConfirmDelete = () => {
   // 真实业务请发起请求
-  data.value.splice(deleteIdx.value, 1);
-  pagination.value.total = data.value.length;
-  const selectedIdx = selectedRowKeys.value.indexOf(deleteIdx.value);
+  data.value.splice(deleteIdx.value, 1)
+  pagination.value.total = data.value.length
+  const selectedIdx = selectedRowKeys.value.indexOf(deleteIdx.value)
   if (selectedIdx > -1) {
-    selectedRowKeys.value.splice(selectedIdx, 1);
+    selectedRowKeys.value.splice(selectedIdx, 1)
   }
-  confirmVisible.value = false;
-  MessagePlugin.success('删除成功');
-  resetIdx();
-};
+  confirmVisible.value = false
+  MessagePlugin.success('删除成功')
+  resetIdx()
+}
 
 const onCancel = () => {
-  resetIdx();
-};
+  resetIdx()
+}
 
-const rowKey = 'index';
+const rowKey = 'index'
 
 const rehandlePageChange = (curr, pageInfo) => {
-  console.log('分页变化', curr, pageInfo);
-};
+  console.log('分页变化', curr, pageInfo)
+}
 const rehandleChange = (changeParams, triggerAndData) => {
-  console.log('统一Change', changeParams, triggerAndData);
-};
+  console.log('统一Change', changeParams, triggerAndData)
+}
 const handleClickDetail = () => {
-  router.push('/detail/base');
-};
+  router.push('/detail/base')
+}
 const handleAdd = () => {
-  router.push('/app/handle?type=add');
-};
+  router.push('/app/handle?type=add')
+}
 const handleClickDelete = (row: { rowIndex: any }) => {
-  deleteIdx.value = row.rowIndex;
-  confirmVisible.value = true;
-};
+  deleteIdx.value = row.rowIndex
+  confirmVisible.value = true
+}
 
 const offsetTop = computed(() => {
-  return store.isUseTabsRouter ? 48 : 0;
-});
+  return store.isUseTabsRouter ? 48 : 0
+})
 
 const getContainer = () => {
-  return document.querySelector(`.${prefix}-layout`);
-};
+  return document.querySelector(`.${prefix}-layout`)
+}
 </script>
 
 <style lang="less" scoped>

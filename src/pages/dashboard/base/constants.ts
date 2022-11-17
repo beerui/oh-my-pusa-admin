@@ -1,18 +1,18 @@
-import { TdBaseTableProps } from 'tdesign-vue-next';
+import { TdBaseTableProps } from 'tdesign-vue-next'
 
 interface DashboardPanel {
-  title: string;
-  number: string | number;
-  leftType: string;
-  upTrend?: string;
-  downTrend?: string;
+  title: string
+  number: string | number
+  leftType: string
+  upTrend?: string
+  downTrend?: string
 }
 
 interface TendItem {
-  growUp?: number;
-  productName: string;
-  count: number;
-  date: string;
+  growUp?: number
+  productName: string
+  count: number
+  date: string
 }
 
 export const PANE_LIST: Array<DashboardPanel> = [
@@ -40,7 +40,7 @@ export const PANE_LIST: Array<DashboardPanel> = [
     downTrend: '20.5%',
     leftType: 'icon-file-paste',
   },
-];
+]
 
 export const SALE_TEND_LIST: Array<TendItem> = [
   {
@@ -79,7 +79,7 @@ export const SALE_TEND_LIST: Array<TendItem> = [
     count: 2015,
     date: '2021-09-12',
   },
-];
+]
 
 export const BUY_TEND_LIST: Array<TendItem> = [
   {
@@ -118,7 +118,7 @@ export const BUY_TEND_LIST: Array<TendItem> = [
     count: 2015,
     date: '2021-09-12',
   },
-];
+]
 
 export const SALE_COLUMNS: TdBaseTableProps['columns'] = [
   {
@@ -160,7 +160,7 @@ export const SALE_COLUMNS: TdBaseTableProps['columns'] = [
     width: 80,
     fixed: 'right',
   },
-];
+]
 
 export const BUY_COLUMNS: TdBaseTableProps['columns'] = [
   {
@@ -202,4 +202,4 @@ export const BUY_COLUMNS: TdBaseTableProps['columns'] = [
     width: 80,
     fixed: 'right',
   },
-];
+]

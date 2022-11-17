@@ -12,14 +12,14 @@
 </template>
 
 <script setup lang="ts">
-import { useSettingStore } from '@/store';
+import { useSettingStore } from '@/store'
 
-const settingStore = useSettingStore();
+const settingStore = useSettingStore()
 const toggleSettingPanel = () => {
   settingStore.updateConfig({
     showSettingPanel: true,
-  });
-};
+  })
+}
 </script>
 
 <style lang="less" scoped>

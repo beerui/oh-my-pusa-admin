@@ -75,7 +75,7 @@ export const BASE_INFO_DATA = [
     value: '2020-12-22 10:00:00',
     type: null,
   },
-];
+]
 
 export const TABLE_COLUMNS_DATA = [
   {
@@ -126,7 +126,7 @@ export const TABLE_COLUMNS_DATA = [
     colKey: 'op',
     title: '操作',
   },
-];
+]
 
 export const PRODUCT_LIST = [
   {
@@ -149,4 +149,4 @@ export const PRODUCT_LIST = [
     use: 120,
     stock: 2000,
   },
-];
+]

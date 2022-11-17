@@ -91,39 +91,39 @@
 <script lang="ts">
 export default {
   name: 'UserIndex',
-};
+}
 </script>
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, watch, computed } from 'vue';
-import * as echarts from 'echarts/core';
-import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
-import { LineChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import { useSettingStore } from '@/store';
+import { nextTick, onMounted, onUnmounted, watch, computed } from 'vue'
+import * as echarts from 'echarts/core'
+import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import { LineChart } from 'echarts/charts'
+import { CanvasRenderer } from 'echarts/renderers'
+import { useSettingStore } from '@/store'
 
-import { LAST_7_DAYS } from '@/utils/date';
-import { USER_INFO_LIST, TEAM_MEMBERS, PRODUCT_LIST } from './constants';
-import { getFolderLineDataSet } from './index';
-import ProductAIcon from '@/assets/assets-product-1.svg';
-import ProductBIcon from '@/assets/assets-product-2.svg';
-import ProductCIcon from '@/assets/assets-product-3.svg';
-import ProductDIcon from '@/assets/assets-product-4.svg';
-import { changeChartsTheme } from '@/utils/color';
+import { LAST_7_DAYS } from '@/utils/date'
+import { USER_INFO_LIST, TEAM_MEMBERS, PRODUCT_LIST } from './constants'
+import { getFolderLineDataSet } from './index'
+import ProductAIcon from '@/assets/assets-product-1.svg'
+import ProductBIcon from '@/assets/assets-product-2.svg'
+import ProductCIcon from '@/assets/assets-product-3.svg'
+import ProductDIcon from '@/assets/assets-product-4.svg'
+import { changeChartsTheme } from '@/utils/color'
 
-echarts.use([GridComponent, TooltipComponent, LineChart, CanvasRenderer, LegendComponent]);
+echarts.use([GridComponent, TooltipComponent, LineChart, CanvasRenderer, LegendComponent])
 
-let lineContainer: HTMLElement;
-let lineChart: echarts.ECharts;
-const store = useSettingStore();
-const chartColors = computed(() => store.chartColors);
+let lineContainer: HTMLElement
+let lineChart: echarts.ECharts
+const store = useSettingStore()
+const chartColors = computed(() => store.chartColors)
 
-const onLineChange = (value) => {
-  lineChart.setOption(getFolderLineDataSet(value));
-};
+const onLineChange = value => {
+  lineChart.setOption(getFolderLineDataSet(value))
+}
 
 const initChart = () => {
-  lineContainer = document.getElementById('lineContainer');
-  lineChart = echarts.init(lineContainer);
+  lineContainer = document.getElementById('lineContainer')
+  lineChart = echarts.init(lineContainer)
   lineChart.setOption({
     grid: {
       x: 30, // 默认是80px
@@ -132,48 +132,48 @@ const initChart = () => {
       y2: 30, // 默认60px
     },
     ...getFolderLineDataSet({ ...chartColors.value }),
-  });
-};
+  })
+}
 
 const updateContainer = () => {
   lineChart?.resize({
     width: lineContainer.clientWidth,
     height: lineContainer.clientHeight,
-  });
-};
+  })
+}
 
 onMounted(() => {
   nextTick(() => {
-    initChart();
-  });
-  window.addEventListener('resize', updateContainer, false);
-});
+    initChart()
+  })
+  window.addEventListener('resize', updateContainer, false)
+})
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateContainer);
-});
+  window.removeEventListener('resize', updateContainer)
+})
 
-const getIcon = (type) => {
+const getIcon = type => {
   switch (type) {
     case 'a':
-      return ProductAIcon;
+      return ProductAIcon
     case 'b':
-      return ProductBIcon;
+      return ProductBIcon
     case 'c':
-      return ProductCIcon;
+      return ProductCIcon
     case 'd':
-      return ProductDIcon;
+      return ProductDIcon
     default:
-      return ProductAIcon;
+      return ProductAIcon
   }
-};
+}
 
 watch(
   () => store.brandTheme,
   () => {
-    changeChartsTheme([lineChart]);
-  },
-);
+    changeChartsTheme([lineChart])
+  }
+)
 </script>
 
 <style lang="less" scoped>

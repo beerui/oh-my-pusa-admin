@@ -67,84 +67,84 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, ref, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import { useSettingStore, useTabsRouterStore } from '@/store';
-import { prefix } from '@/config/global';
-import { TRouterInfo } from '@/types/interface';
+import { nextTick, ref, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { useSettingStore, useTabsRouterStore } from '@/store'
+import { prefix } from '@/config/global'
+import { TRouterInfo } from '@/types/interface'
 
-import LContent from './Content.vue';
-import LBreadcrumb from './Breadcrumb.vue';
-import LFooter from './Footer.vue';
+import LContent from './Content.vue'
+import LBreadcrumb from './Breadcrumb.vue'
+import LFooter from './Footer.vue'
 
-const route = useRoute();
-const router = useRouter();
+const route = useRoute()
+const router = useRouter()
 
-const settingStore = useSettingStore();
-const tabsRouterStore = useTabsRouterStore();
-const tabRouters = computed(() => tabsRouterStore.tabRouters.filter((route) => route.isAlive || route.isHome));
-const activeTabPath = ref('');
+const settingStore = useSettingStore()
+const tabsRouterStore = useTabsRouterStore()
+const tabRouters = computed(() => tabsRouterStore.tabRouters.filter(route => route.isAlive || route.isHome))
+const activeTabPath = ref('')
 
 const handleChangeCurrentTab = (path: string) => {
-  const { tabRouters } = tabsRouterStore;
-  const route = tabRouters.find((i) => i.path === path);
-  router.push({ path, query: route.query });
-};
+  const { tabRouters } = tabsRouterStore
+  const route = tabRouters.find(i => i.path === path)
+  router.push({ path, query: route.query })
+}
 
 const handleRemove = ({ value: path, index }) => {
-  const { tabRouters } = tabsRouterStore;
-  const nextRouter = tabRouters[index + 1] || tabRouters[index - 1];
+  const { tabRouters } = tabsRouterStore
+  const nextRouter = tabRouters[index + 1] || tabRouters[index - 1]
 
-  tabsRouterStore.subtractCurrentTabRouter({ path, routeIdx: index });
-  if (path === route.path) router.push({ path: nextRouter.path, query: nextRouter.query });
-};
+  tabsRouterStore.subtractCurrentTabRouter({ path, routeIdx: index })
+  if (path === route.path) router.push({ path: nextRouter.path, query: nextRouter.query })
+}
 
 const handleRefresh = (route: TRouterInfo, routeIdx: number) => {
-  tabsRouterStore.toggleTabRouterAlive(routeIdx);
+  tabsRouterStore.toggleTabRouterAlive(routeIdx)
   nextTick(() => {
-    tabsRouterStore.toggleTabRouterAlive(routeIdx);
-    router.replace({ path: route.path, query: route.query });
-  });
-  activeTabPath.value = null;
-};
+    tabsRouterStore.toggleTabRouterAlive(routeIdx)
+    router.replace({ path: route.path, query: route.query })
+  })
+  activeTabPath.value = null
+}
 const handleCloseAhead = (path: string, routeIdx: number) => {
-  tabsRouterStore.subtractTabRouterAhead({ path, routeIdx });
+  tabsRouterStore.subtractTabRouterAhead({ path, routeIdx })
 
-  handleOperationEffect('ahead', routeIdx);
-};
+  handleOperationEffect('ahead', routeIdx)
+}
 const handleCloseBehind = (path: string, routeIdx: number) => {
-  tabsRouterStore.subtractTabRouterBehind({ path, routeIdx });
+  tabsRouterStore.subtractTabRouterBehind({ path, routeIdx })
 
-  handleOperationEffect('behind', routeIdx);
-};
+  handleOperationEffect('behind', routeIdx)
+}
 const handleCloseOther = (path: string, routeIdx: number) => {
-  tabsRouterStore.subtractTabRouterOther({ path, routeIdx });
+  tabsRouterStore.subtractTabRouterOther({ path, routeIdx })
 
-  handleOperationEffect('other', routeIdx);
-};
+  handleOperationEffect('other', routeIdx)
+}
 
 // 处理非当前路由操作的副作用
 const handleOperationEffect = (type: 'other' | 'ahead' | 'behind', routeIndex: number) => {
-  const currentPath = router.currentRoute.value.path;
-  const { tabRouters } = tabsRouterStore;
+  const currentPath = router.currentRoute.value.path
+  const { tabRouters } = tabsRouterStore
 
-  const currentIdx = tabRouters.findIndex((i) => i.path === currentPath);
+  const currentIdx = tabRouters.findIndex(i => i.path === currentPath)
   // 存在三种情况需要刷新当前路由
   // 点击非当前路由的关闭其他、点击非当前路由的关闭左侧且当前路由小于触发路由、点击非当前路由的关闭右侧且当前路由大于触发路由
   const needRefreshRouter =
     (type === 'other' && currentIdx !== routeIndex) ||
     (type === 'ahead' && currentIdx < routeIndex) ||
-    (type === 'behind' && currentIdx === -1);
+    (type === 'behind' && currentIdx === -1)
   if (needRefreshRouter) {
-    const nextRouteIdx = type === 'behind' ? tabRouters.length - 1 : 1;
-    const nextRouter = tabRouters[nextRouteIdx];
-    router.push({ path: nextRouter.path, query: nextRouter.query });
+    const nextRouteIdx = type === 'behind' ? tabRouters.length - 1 : 1
+    const nextRouter = tabRouters[nextRouteIdx]
+    router.push({ path: nextRouter.path, query: nextRouter.query })
   }
 
-  activeTabPath.value = null;
-};
+  activeTabPath.value = null
+}
 const handleTabMenuClick = (visible: boolean, ctx, path: string) => {
-  if (ctx.trigger === 'document') activeTabPath.value = null;
-  if (visible) activeTabPath.value = path;
-};
+  if (ctx.trigger === 'document') activeTabPath.value = null
+  if (visible) activeTabPath.value = path
+}
 </script>

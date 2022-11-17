@@ -113,69 +113,69 @@
 <script lang="ts">
 export default {
   name: 'DetailAdvanced',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { prefix } from '@/config/global';
-import { BASE_INFO_DATA, TABLE_COLUMNS_DATA as columns, PRODUCT_LIST } from './constants';
-import { getPurchaseList } from '@/api/detail';
+import { ref, onMounted } from 'vue'
+import { prefix } from '@/config/global'
+import { BASE_INFO_DATA, TABLE_COLUMNS_DATA as columns, PRODUCT_LIST } from './constants'
+import { getPurchaseList } from '@/api/detail'
 
-import Product from './components/Product.vue';
+import Product from './components/Product.vue'
 
-const data = ref([]);
+const data = ref([])
 const pagination = ref({
   defaultPageSize: 10,
   total: 100,
   defaultCurrent: 1,
-});
+})
 
-const updateCurrent = ref(0);
+const updateCurrent = ref(0)
 
 const stepUpdate = () => {
   setInterval(() => {
     if (updateCurrent.value > 5) {
-      updateCurrent.value = -1;
+      updateCurrent.value = -1
     }
-    updateCurrent.value += 1;
-  }, 2000);
-};
+    updateCurrent.value += 1
+  }, 2000)
+}
 
 const fetchData = async () => {
   try {
-    const { list } = await getPurchaseList();
-    data.value = list;
+    const { list } = await getPurchaseList()
+    data.value = list
     pagination.value = {
       ...pagination.value,
       total: list.length,
-    };
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
-};
+}
 
 onMounted(() => {
-  stepUpdate();
-  fetchData();
-});
+  stepUpdate()
+  fetchData()
+})
 
-const visible = ref(false);
-const sortChange = (val) => {
-  console.log(val);
-};
+const visible = ref(false)
+const sortChange = val => {
+  console.log(val)
+}
 const rehandleChange = (changeParams, triggerAndData) => {
-  console.log('统一Change', changeParams, triggerAndData);
-};
+  console.log('统一Change', changeParams, triggerAndData)
+}
 const listClick = () => {
-  visible.value = true;
-};
-const deleteClickOp = (columns) => {
-  data.value.splice(columns.rowIndex, 1);
-};
+  visible.value = true
+}
+const deleteClickOp = columns => {
+  data.value.splice(columns.rowIndex, 1)
+}
 const onConfirm = () => {
-  visible.value = false;
-};
+  visible.value = false
+}
 </script>
 
 <style lang="less" scoped>

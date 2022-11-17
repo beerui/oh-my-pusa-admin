@@ -72,24 +72,24 @@
 <script lang="ts">
 export default {
   name: 'DetailDeploy',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch, computed } from 'vue';
+import { onMounted, onUnmounted, ref, watch, computed } from 'vue'
 
-import * as echarts from 'echarts/core';
-import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
-import { BarChart, LineChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import { useSettingStore } from '@/store';
+import * as echarts from 'echarts/core'
+import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components'
+import { BarChart, LineChart } from 'echarts/charts'
+import { CanvasRenderer } from 'echarts/renderers'
+import { useSettingStore } from '@/store'
 
-import { getSmoothLineDataSet, get2ColBarChartDataSet } from './index';
-import { BASE_INFO_DATA, TABLE_COLUMNS as columns } from './constants';
-import { changeChartsTheme } from '@/utils/color';
+import { getSmoothLineDataSet, get2ColBarChartDataSet } from './index'
+import { BASE_INFO_DATA, TABLE_COLUMNS as columns } from './constants'
+import { changeChartsTheme } from '@/utils/color'
 
-import { prefix } from '@/config/global';
-import { getProjectList } from '@/api/detail';
+import { prefix } from '@/config/global'
+import { getProjectList } from '@/api/detail'
 
 echarts.use([
   TitleComponent,
@@ -100,103 +100,103 @@ echarts.use([
   BarChart,
   LineChart,
   CanvasRenderer,
-]);
+])
 
-const store = useSettingStore();
+const store = useSettingStore()
 
-const chartColors = computed(() => store.chartColors);
-const data = ref([]);
+const chartColors = computed(() => store.chartColors)
+const data = ref([])
 const pagination = ref({
   defaultPageSize: 10,
   total: 100,
   defaultCurrent: 1,
-});
+})
 
 const fetchData = async () => {
   try {
-    const { list } = await getProjectList();
-    data.value = list;
+    const { list } = await getProjectList()
+    data.value = list
     pagination.value = {
       ...pagination.value,
       total: list.length,
-    };
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e)
   }
-};
-const visible = ref(false);
+}
+const visible = ref(false)
 
 // monitorChart logic
-let monitorContainer: HTMLElement;
-let monitorChart: echarts.ECharts;
+let monitorContainer: HTMLElement
+let monitorChart: echarts.ECharts
 onMounted(() => {
-  monitorContainer = document.getElementById('monitorContainer');
-  monitorChart = echarts.init(monitorContainer);
-  monitorChart.setOption(getSmoothLineDataSet({ ...chartColors.value }));
+  monitorContainer = document.getElementById('monitorContainer')
+  monitorChart = echarts.init(monitorContainer)
+  monitorChart.setOption(getSmoothLineDataSet({ ...chartColors.value }))
   setInterval(() => {
-    monitorChart.setOption(getSmoothLineDataSet({ ...chartColors.value }));
-  }, 3000);
-});
+    monitorChart.setOption(getSmoothLineDataSet({ ...chartColors.value }))
+  }, 3000)
+})
 
 // dataChart logic
-let dataContainer: HTMLElement;
-let dataChart: echarts.ECharts;
+let dataContainer: HTMLElement
+let dataChart: echarts.ECharts
 onMounted(() => {
-  dataContainer = document.getElementById('dataContainer');
-  dataChart = echarts.init(dataContainer);
-  dataChart.setOption(get2ColBarChartDataSet({ ...chartColors.value }));
-});
+  dataContainer = document.getElementById('dataContainer')
+  dataChart = echarts.init(dataContainer)
+  dataChart.setOption(get2ColBarChartDataSet({ ...chartColors.value }))
+})
 
-const intervalTimer = null;
+const intervalTimer = null
 
 /// / chartSize update
 const updateContainer = () => {
   monitorChart.resize({
     width: monitorContainer.clientWidth,
     height: monitorContainer.clientHeight,
-  });
+  })
   dataChart.resize({
     width: dataContainer.clientWidth,
     height: dataContainer.clientHeight,
-  });
-};
+  })
+}
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateContainer);
-  clearInterval(intervalTimer);
-});
+  window.removeEventListener('resize', updateContainer)
+  clearInterval(intervalTimer)
+})
 
 const onAlertChange = () => {
-  dataChart.setOption(get2ColBarChartDataSet({ ...chartColors.value }));
-};
+  dataChart.setOption(get2ColBarChartDataSet({ ...chartColors.value }))
+}
 
 onMounted(() => {
-  fetchData();
-  window.addEventListener('resize', updateContainer, false);
-});
+  fetchData()
+  window.addEventListener('resize', updateContainer, false)
+})
 
 watch(
   () => store.brandTheme,
   () => {
-    changeChartsTheme([monitorChart, dataChart]);
-  },
-);
+    changeChartsTheme([monitorChart, dataChart])
+  }
+)
 
-const sortChange = (val) => {
-  console.log(val);
-};
+const sortChange = val => {
+  console.log(val)
+}
 const rehandleChange = (changeParams, triggerAndData) => {
-  console.log('统一Change', changeParams, triggerAndData);
-};
+  console.log('统一Change', changeParams, triggerAndData)
+}
 const listClick = () => {
-  visible.value = true;
-};
+  visible.value = true
+}
 const onConfirm = () => {
-  visible.value = false;
-};
-const deleteClickOp = (e) => {
-  data.value.splice(e.rowIndex, 1);
-};
+  visible.value = false
+}
+const deleteClickOp = e => {
+  data.value.splice(e.rowIndex, 1)
+}
 </script>
 
 <style lang="less" scoped>

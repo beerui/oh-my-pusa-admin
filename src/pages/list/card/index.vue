@@ -19,7 +19,7 @@
           <t-col
             v-for="product in productList.slice(
               pagination.pageSize * (pagination.current - 1),
-              pagination.pageSize * pagination.current,
+              pagination.pageSize * pagination.current
             )"
             :key="product.index"
             :lg="4"
@@ -64,16 +64,16 @@
 <script lang="ts">
 export default {
   name: 'ListCard',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { SearchIcon } from 'tdesign-icons-vue-next';
-import { MessagePlugin } from 'tdesign-vue-next';
-import ProductCard from '@/components/product-card/index.vue';
-import DialogForm from './components/DialogForm.vue';
-import { getCardList } from '@/api/list';
+import { ref, computed, onMounted } from 'vue'
+import { SearchIcon } from 'tdesign-icons-vue-next'
+import { MessagePlugin } from 'tdesign-vue-next'
+import ProductCard from '@/components/product-card/index.vue'
+import DialogForm from './components/DialogForm.vue'
+import { getCardList } from '@/api/list'
 
 const INITIAL_DATA = {
   name: '',
@@ -82,67 +82,67 @@ const INITIAL_DATA = {
   type: '',
   mark: '',
   amount: 0,
-};
+}
 
-const pagination = ref({ current: 1, pageSize: 12, total: 0 });
-const deleteProduct = ref(undefined);
+const pagination = ref({ current: 1, pageSize: 12, total: 0 })
+const deleteProduct = ref(undefined)
 
-const productList = ref([]);
-const dataLoading = ref(true);
+const productList = ref([])
+const dataLoading = ref(true)
 
 const fetchData = async () => {
   try {
-    const { list } = await getCardList();
-    productList.value = list;
+    const { list } = await getCardList()
+    productList.value = list
     pagination.value = {
       ...pagination.value,
       total: list.length,
-    };
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e)
   } finally {
-    dataLoading.value = false;
+    dataLoading.value = false
   }
-};
+}
 
 const confirmBody = computed(() =>
-  deleteProduct.value ? `确认删除后${deleteProduct.value.name}的所有产品信息将被清空, 且无法恢复` : '',
-);
+  deleteProduct.value ? `确认删除后${deleteProduct.value.name}的所有产品信息将被清空, 且无法恢复` : ''
+)
 
 onMounted(() => {
-  fetchData();
-});
+  fetchData()
+})
 
-const formDialogVisible = ref(false);
-const searchValue = ref('');
-const confirmVisible = ref(false);
-const formData = ref({ ...INITIAL_DATA });
+const formDialogVisible = ref(false)
+const searchValue = ref('')
+const confirmVisible = ref(false)
+const formData = ref({ ...INITIAL_DATA })
 
 const onPageSizeChange = (size: number) => {
-  pagination.value.pageSize = size;
-  pagination.value.current = 1;
-};
+  pagination.value.pageSize = size
+  pagination.value.current = 1
+}
 const onCurrentChange = (current: number) => {
-  pagination.value.current = current;
-};
-const handleDeleteItem = (product) => {
-  confirmVisible.value = true;
-  deleteProduct.value = product;
-};
+  pagination.value.current = current
+}
+const handleDeleteItem = product => {
+  confirmVisible.value = true
+  deleteProduct.value = product
+}
 const onConfirmDelete = () => {
-  const { index } = deleteProduct.value;
-  productList.value.splice(index - 1, 1);
-  confirmVisible.value = false;
-  MessagePlugin.success('删除成功');
-};
+  const { index } = deleteProduct.value
+  productList.value.splice(index - 1, 1)
+  confirmVisible.value = false
+  MessagePlugin.success('删除成功')
+}
 const onCancel = () => {
-  deleteProduct.value = undefined;
-  formData.value = { ...INITIAL_DATA };
-};
-const handleManageProduct = (product) => {
-  formDialogVisible.value = true;
-  formData.value = { ...product, status: product?.isSetup ? '1' : '0' };
-};
+  deleteProduct.value = undefined
+  formData.value = { ...INITIAL_DATA }
+}
+const handleManageProduct = product => {
+  formDialogVisible.value = true
+  formData.value = { ...product, status: product?.isSetup ? '1' : '0' }
+}
 </script>
 
 <style lang="less" scoped>

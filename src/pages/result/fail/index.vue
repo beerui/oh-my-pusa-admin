@@ -12,7 +12,7 @@
 <script lang="ts">
 export default {
   name: 'ResultFail',
-};
+}
 </script>
 <style lang="less" scoped>
 .result-success {

@@ -52,14 +52,14 @@
 </template>
 
 <script setup lang="ts">
-import { PropType, computed } from 'vue';
-import { useRouter } from 'vue-router';
-import { useSettingStore } from '@/store';
-import { getActive } from '@/router';
-import { prefix } from '@/config/global';
-import { MenuRoute } from '@/types/interface';
+import { PropType, computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useSettingStore } from '@/store'
+import { getActive } from '@/router'
+import { prefix } from '@/config/global'
+import { MenuRoute } from '@/types/interface'
 
-import MenuContent from './MenuContent.vue';
+import MenuContent from './MenuContent.vue'
 
 const props = defineProps({
   theme: {
@@ -90,23 +90,23 @@ const props = defineProps({
     type: Number,
     default: 3,
   },
-});
+})
 
-const router = useRouter();
-const settingStore = useSettingStore();
+const router = useRouter()
+const settingStore = useSettingStore()
 
 const toggleSettingPanel = () => {
   settingStore.updateConfig({
     showSettingPanel: true,
-  });
-};
+  })
+}
 
-const active = computed(() => getActive());
+const active = computed(() => getActive())
 
-const layoutCls = computed(() => [`${prefix}-header-layout`]);
+const layoutCls = computed(() => [`${prefix}-header-layout`])
 
 const menuCls = computed(() => {
-  const { isFixed, layout, isCompact } = props;
+  const { isFixed, layout, isCompact } = props
   return [
     {
       [`${prefix}-header-menu`]: !isFixed,
@@ -114,26 +114,26 @@ const menuCls = computed(() => {
       [`${prefix}-header-menu-fixed-side`]: layout === 'side' && isFixed,
       [`${prefix}-header-menu-fixed-side-compact`]: layout === 'side' && isFixed && isCompact,
     },
-  ];
-});
+  ]
+})
 
 const changeCollapsed = () => {
   settingStore.updateConfig({
     isSidebarCompact: !settingStore.isSidebarCompact,
-  });
-};
+  })
+}
 
-const handleNav = (url) => {
-  router.push(url);
-};
+const handleNav = url => {
+  router.push(url)
+}
 
 const handleLogout = () => {
-  router.push(`/login?redirect=${router.currentRoute.value.fullPath}`);
-};
+  router.push(`/login?redirect=${router.currentRoute.value.fullPath}`)
+}
 
 const navToHelper = () => {
-  window.open('http://tdesign.tencent.com/starter/docs/get-started');
-};
+  window.open('http://tdesign.tencent.com/starter/docs/get-started')
+}
 </script>
 <style lang="less" scoped>
 .@{starter-prefix}-header {

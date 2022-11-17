@@ -1,5 +1,5 @@
-import { defineStore } from 'pinia';
-import { NotificationItem } from '@/types/interface';
+import { defineStore } from 'pinia'
+import { NotificationItem } from '@/types/interface'
 
 const msgData = [
   {
@@ -56,22 +56,22 @@ const msgData = [
     date: '2021-01-01 08:00',
     quality: 'low',
   },
-];
+]
 
-type MsgDataType = typeof msgData;
+type MsgDataType = typeof msgData
 
 export const useNotificationStore = defineStore('notification', {
   state: () => ({
     msgData,
   }),
   getters: {
-    unreadMsg: (state) => state.msgData.filter((item: NotificationItem) => item.status),
-    readMsg: (state) => state.msgData.filter((item: NotificationItem) => !item.status),
+    unreadMsg: state => state.msgData.filter((item: NotificationItem) => item.status),
+    readMsg: state => state.msgData.filter((item: NotificationItem) => !item.status),
   },
   actions: {
     setMsgData(data: MsgDataType) {
-      this.msgData = data;
+      this.msgData = data
     },
   },
   persist: true,
-});
+})

@@ -30,7 +30,7 @@ export const PANE_LIST_DATA = [
     number: 78,
     upTrend: '16%',
   },
-];
+]
 
 export const PRODUCT_LIST = [
   {
@@ -47,4 +47,4 @@ export const PRODUCT_LIST = [
     name: 'SSL证书',
     type: 4,
   },
-];
+]

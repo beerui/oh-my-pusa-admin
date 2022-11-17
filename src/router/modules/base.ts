@@ -1,5 +1,5 @@
-import Layout from '@/layouts/index.vue';
-import DashboardIcon from '@/assets/assets-slide-dashboard.svg';
+import Layout from '@/layouts/index.vue'
+import DashboardIcon from '@/assets/assets-slide-dashboard.svg'
 
 export default [
   {
@@ -23,4 +23,4 @@ export default [
       },
     ],
   },
-];
+]

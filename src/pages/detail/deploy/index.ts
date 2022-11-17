@@ -1,6 +1,6 @@
-import { TChartColor } from '@/config/color';
-import { getChartListColor } from '@/utils/color';
-import { getRandomArray, getDateArray } from '@/utils/charts';
+import { TChartColor } from '@/config/color'
+import { getChartListColor } from '@/utils/color'
+import { getRandomArray, getDateArray } from '@/utils/charts'
 
 /** 平滑图数据 */
 export function getSmoothLineDataSet({
@@ -8,10 +8,10 @@ export function getSmoothLineDataSet({
   placeholderColor,
   borderColor,
 }: { dateTime?: Array<string> } & TChartColor) {
-  let dateArray: Array<string> = ['00:00', '02:00', '04:00', '06:00'];
+  let dateArray: Array<string> = ['00:00', '02:00', '04:00', '06:00']
   if (dateTime.length > 0) {
-    const divideNum = 7;
-    dateArray = getDateArray(dateTime, divideNum);
+    const divideNum = 7
+    dateArray = getDateArray(dateTime, divideNum)
   }
 
   return {
@@ -104,10 +104,10 @@ export function getSmoothLineDataSet({
         color: getChartListColor()[1],
       },
     ],
-  };
+  }
 }
 
-export const lastYearList: Array<any> = [100, 120, 140, 160, 180, 200, 210];
+export const lastYearList: Array<any> = [100, 120, 140, 160, 180, 200, 210]
 
 /**
  * 柱状图数据结构
@@ -121,12 +121,12 @@ export function get2ColBarChartDataSet({
   placeholderColor,
   borderColor,
 }: { isMonth?: boolean } & TChartColor) {
-  let lastYearListCopy = lastYearList.concat([]);
-  let thisYearListCopy = lastYearList.concat([]);
+  let lastYearListCopy = lastYearList.concat([])
+  let thisYearListCopy = lastYearList.concat([])
 
   if (isMonth) {
-    lastYearListCopy = lastYearListCopy.reverse();
-    thisYearListCopy = thisYearListCopy.reverse();
+    lastYearListCopy = lastYearListCopy.reverse()
+    thisYearListCopy = thisYearListCopy.reverse()
   }
 
   return {
@@ -202,12 +202,12 @@ export function get2ColBarChartDataSet({
         itemStyle: {
           color: (params: { value: number }) => {
             if (params.value >= 200) {
-              return getChartListColor()[1];
+              return getChartListColor()[1]
             }
-            return getChartListColor()[0];
+            return getChartListColor()[0]
           },
         },
       },
     ],
-  };
+  }
 }

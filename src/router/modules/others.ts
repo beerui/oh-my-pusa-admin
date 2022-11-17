@@ -1,4 +1,4 @@
-import LogoutIcon from '@/assets/assets-slide-logout.svg';
+import LogoutIcon from '@/assets/assets-slide-logout.svg'
 
 export default [
   {
@@ -16,4 +16,4 @@ export default [
       },
     ],
   },
-];
+]

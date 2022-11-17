@@ -61,105 +61,105 @@
 <script lang="ts">
 export default {
   name: 'DashboardDetail',
-};
+}
 </script>
 
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, watch, computed, onDeactivated } from 'vue';
+import { nextTick, onMounted, onUnmounted, watch, computed, onDeactivated } from 'vue'
 
-import * as echarts from 'echarts/core';
-import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components';
-import { LineChart, ScatterChart } from 'echarts/charts';
-import { CanvasRenderer } from 'echarts/renderers';
-import ProductCard from '@/components/product-card/index.vue';
+import * as echarts from 'echarts/core'
+import { GridComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+import { LineChart, ScatterChart } from 'echarts/charts'
+import { CanvasRenderer } from 'echarts/renderers'
+import ProductCard from '@/components/product-card/index.vue'
 
-import { getFolderLineDataSet, getScatterDataSet } from './index';
-import { PANE_LIST_DATA, PRODUCT_LIST } from './constants';
-import { LAST_7_DAYS } from '@/utils/date';
-import { useSettingStore } from '@/store';
-import { changeChartsTheme } from '@/utils/color';
+import { getFolderLineDataSet, getScatterDataSet } from './index'
+import { PANE_LIST_DATA, PRODUCT_LIST } from './constants'
+import { LAST_7_DAYS } from '@/utils/date'
+import { useSettingStore } from '@/store'
+import { changeChartsTheme } from '@/utils/color'
 
-import Trend from '@/components/trend/index.vue';
+import Trend from '@/components/trend/index.vue'
 
-echarts.use([GridComponent, LegendComponent, TooltipComponent, LineChart, ScatterChart, CanvasRenderer]);
+echarts.use([GridComponent, LegendComponent, TooltipComponent, LineChart, ScatterChart, CanvasRenderer])
 
-const store = useSettingStore();
-const chartColors = computed(() => store.chartColors);
+const store = useSettingStore()
+const chartColors = computed(() => store.chartColors)
 
 // lineChart logic
-let lineContainer: HTMLElement;
-let lineChart: echarts.ECharts;
+let lineContainer: HTMLElement
+let lineChart: echarts.ECharts
 const renderLineChart = () => {
-  lineContainer = document.getElementById('lineContainer');
-  lineChart = echarts.init(lineContainer);
-  lineChart.setOption(getFolderLineDataSet({ ...chartColors.value }));
-};
+  lineContainer = document.getElementById('lineContainer')
+  lineChart = echarts.init(lineContainer)
+  lineChart.setOption(getFolderLineDataSet({ ...chartColors.value }))
+}
 
 // scatterChart logic
-let scatterContainer: HTMLElement;
-let scatterChart: echarts.ECharts;
+let scatterContainer: HTMLElement
+let scatterChart: echarts.ECharts
 const renderScatterChart = () => {
-  scatterContainer = document.getElementById('scatterContainer');
-  scatterChart = echarts.init(scatterContainer);
-  scatterChart.setOption(getScatterDataSet({ ...chartColors.value }));
-};
+  scatterContainer = document.getElementById('scatterContainer')
+  scatterChart = echarts.init(scatterContainer)
+  scatterChart.setOption(getScatterDataSet({ ...chartColors.value }))
+}
 
 // chartSize update
 const updateContainer = () => {
   lineChart?.resize({
     width: lineContainer.clientWidth,
     height: lineContainer.clientHeight,
-  });
+  })
   scatterChart?.resize({
     width: scatterContainer.clientWidth,
     height: scatterContainer.clientHeight,
-  });
-};
+  })
+}
 
 const renderCharts = () => {
-  renderScatterChart();
-  renderLineChart();
-};
+  renderScatterChart()
+  renderLineChart()
+}
 
 onMounted(() => {
-  renderCharts();
-  window.addEventListener('resize', updateContainer, false);
+  renderCharts()
+  window.addEventListener('resize', updateContainer, false)
   nextTick(() => {
-    updateContainer();
-  });
-});
+    updateContainer()
+  })
+})
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateContainer);
-});
+  window.removeEventListener('resize', updateContainer)
+})
 
 onDeactivated(() => {
-  storeModeWatch();
-  storeBrandThemeWatch();
-});
+  storeModeWatch()
+  storeBrandThemeWatch()
+})
 
 const storeModeWatch = watch(
   () => store.mode,
   () => {
-    renderCharts();
-  },
-);
+    renderCharts()
+  }
+)
 
 const storeBrandThemeWatch = watch(
   () => store.brandTheme,
   () => {
-    changeChartsTheme([lineChart, scatterChart]);
-  },
-);
+    changeChartsTheme([lineChart, scatterChart])
+  }
+)
 
 const onSatisfyChange = () => {
-  scatterChart.setOption(getScatterDataSet({ ...chartColors.value }));
-};
+  scatterChart.setOption(getScatterDataSet({ ...chartColors.value }))
+}
 
 const onMaterialChange = (value: string[]) => {
-  const chartColors = computed(() => store.chartColors);
-  lineChart.setOption(getFolderLineDataSet({ dateTime: value, ...chartColors.value }));
-};
+  const chartColors = computed(() => store.chartColors)
+  lineChart.setOption(getFolderLineDataSet({ dateTime: value, ...chartColors.value }))
+}
 </script>
 
 <style lang="less" scoped>

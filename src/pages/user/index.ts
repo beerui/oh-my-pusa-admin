@@ -1,6 +1,6 @@
-import { TChartColor } from '@/config/color';
-import { getChartListColor } from '@/utils/color';
-import { getRandomArray, getDateArray } from '@/utils/charts';
+import { TChartColor } from '@/config/color'
+import { getChartListColor } from '@/utils/color'
+import { getRandomArray, getDateArray } from '@/utils/charts'
 
 /** 折线图数据 */
 export function getFolderLineDataSet({
@@ -8,10 +8,10 @@ export function getFolderLineDataSet({
   placeholderColor,
   borderColor,
 }: { dateTime?: Array<string> } & TChartColor) {
-  let dateArray: Array<string> = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+  let dateArray: Array<string> = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
   if (dateTime.length > 0) {
-    const divideNum = 7;
-    dateArray = getDateArray(dateTime, divideNum);
+    const divideNum = 7
+    dateArray = getDateArray(dateTime, divideNum)
   }
   return {
     color: getChartListColor(),
@@ -145,5 +145,5 @@ export function getFolderLineDataSet({
         },
       },
     ],
-  };
+  }
 }

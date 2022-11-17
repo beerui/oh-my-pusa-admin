@@ -1,23 +1,23 @@
 export interface PurchaseListResult {
-  list: Array<PurchaseInfo>;
+  list: Array<PurchaseInfo>
 }
 export interface PurchaseInfo {
-  adminName: string;
-  index: string;
-  pdName: string;
-  pdNum: string;
-  pdType: string;
-  purchaseNum: number;
-  updateTime: Date;
+  adminName: string
+  index: string
+  pdName: string
+  pdNum: string
+  pdType: string
+  purchaseNum: number
+  updateTime: Date
 }
 
 export interface ProjectListResult {
-  list: Array<ProjectInfo>;
+  list: Array<ProjectInfo>
 }
 export interface ProjectInfo {
-  adminName: string;
-  adminPhone: string;
-  index: number;
-  name: string;
-  updateTime: Date;
+  adminName: string
+  adminPhone: string
+  index: number
+  name: string
+  updateTime: Date
 }

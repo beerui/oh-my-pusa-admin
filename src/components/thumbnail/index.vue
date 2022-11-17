@@ -2,7 +2,7 @@
   <img :class="className" :src="url" />
 </template>
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed } from 'vue'
 
 const props = defineProps({
   url: String,
@@ -10,18 +10,18 @@ const props = defineProps({
     type: String,
     default: 'layout',
   },
-});
+})
 
 const className = computed(() => {
-  const { type } = props;
+  const { type } = props
   return [
     'thumbnail-container',
     {
       'thumbnail-circle': type === 'circle',
       'thumbnail-layout': type === 'layout',
     },
-  ];
-});
+  ]
+})
 </script>
 <style lang="less" scoped>
 @import url('@/style/index.less');

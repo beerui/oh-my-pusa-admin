@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { prefix } from '@/config/global';
+import { prefix } from '@/config/global'
 </script>
 
 <style lang="less" scoped>
