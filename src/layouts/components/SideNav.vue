@@ -3,12 +3,12 @@
     <t-menu :class="menuCls" :theme="theme" :value="active" :collapsed="collapsed" :default-expanded="defaultExpanded">
       <template #logo>
         <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome">
-          <component :is="getLogo()" :class="`${prefix}-side-nav-logo-${collapsed ? 't' : 'tdesign'}-logo`" />
+          <img class="logo" src="@/assets/logo.jpg" />
         </span>
       </template>
       <menu-content :nav-data="menu" />
       <template #operations>
-        <span class="version-container"> {{ !collapsed ? 'TDesign Starter' : '' }} {{ pgk.version }} </span>
+        <span class="version-container"> {{ !collapsed ? '我滴天哪' : '' }} {{ pgk.version }} </span>
       </template>
     </t-menu>
     <div :class="`${prefix}-side-nav-placeholder${collapsed ? '-hidden' : ''}`"></div>
@@ -26,8 +26,6 @@ import pgk from '../../../package.json';
 import { MenuRoute } from '@/types/interface';
 import { getActive, getRoutesExpanded } from '@/router';
 
-import AssetLogo from '@/assets/assets-t-logo.svg?component';
-import AssetLogoFull from '@/assets/assets-logo-full.svg?component';
 import MenuContent from './MenuContent.vue';
 
 const MIN_POINT = 992 - 1;
@@ -116,11 +114,13 @@ onMounted(() => {
 const goHome = () => {
   router.push('/dashboard/base');
 };
-
-const getLogo = () => {
-  if (collapsed.value) return AssetLogo;
-  return AssetLogoFull;
-};
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-left: 20px;
+}
+</style>

@@ -1,0 +1,72 @@
+export const COLUMNS = [
+  { colKey: 'row-select', type: 'multiple', width: 64, fixed: 'left' },
+  {
+    title: '应用名称',
+    align: 'left',
+    width: 120,
+    colKey: 'name',
+    fixed: 'left',
+  },
+  { title: '简介', colKey: 'status', width: 100, cell: { col: 'status' } },
+  {
+    title: '图标',
+    width: 100,
+    ellipsis: true,
+    colKey: 'no',
+  },
+  {
+    title: '类别',
+    width: 100,
+    ellipsis: true,
+    colKey: 'contractType',
+  },
+  {
+    title: '评分',
+    width: 100,
+    ellipsis: true,
+    colKey: 'paymentType',
+  },
+  {
+    title: '标签',
+    width: 100,
+    ellipsis: true,
+    colKey: 'amount',
+  },
+  {
+    title: '排序',
+    width: 100,
+    ellipsis: true,
+    colKey: 'amount',
+  },
+  {
+    title: '使用人数',
+    width: 100,
+    ellipsis: true,
+    colKey: 'amount',
+  },
+  {
+    title: '应用归属',
+    width: 100,
+    ellipsis: true,
+    colKey: 'amount',
+  },
+  {
+    title: '收藏',
+    width: 100,
+    ellipsis: true,
+    colKey: 'amount',
+  },
+  {
+    title: '点赞',
+    width: 100,
+    ellipsis: true,
+    colKey: 'amount',
+  },
+  {
+    align: 'left',
+    fixed: 'right',
+    width: 100,
+    colKey: 'op',
+    title: '操作',
+  },
+];

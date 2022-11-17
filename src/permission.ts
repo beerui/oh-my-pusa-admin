@@ -29,6 +29,7 @@ router.beforeEach(async (to, from, next) => {
       try {
         await userStore.getUserInfo();
 
+        console.log('userStore', userStore);
         const { roles } = userStore;
 
         await permissionStore.initRoutes(roles);

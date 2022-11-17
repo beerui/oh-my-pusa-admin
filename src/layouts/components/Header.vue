@@ -3,7 +3,7 @@
     <t-head-menu :class="menuCls" :theme="theme" expand-type="popup" :value="active">
       <template #logo>
         <span v-if="showLogo" class="header-logo-container" @click="handleNav('/dashboard/base')">
-          <logo-full class="t-logo" />
+          <img src="@/assets/logo.jpg" />
         </span>
         <div v-else class="header-operate-left">
           <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
@@ -17,17 +17,6 @@
       </template>
       <template #operations>
         <div class="operations-container">
-          <!-- 搜索框 -->
-          <search v-if="layout !== 'side'" :layout="layout" />
-
-          <!-- 全局通知 -->
-          <notice />
-
-          <t-tooltip placement="bottom" content="代码仓库">
-            <t-button theme="default" shape="square" variant="text" @click="navToGitHub">
-              <t-icon name="logo-github" />
-            </t-button>
-          </t-tooltip>
           <t-tooltip placement="bottom" content="帮助文档">
             <t-button theme="default" shape="square" variant="text" @click="navToHelper">
               <t-icon name="help-circle" />
@@ -36,9 +25,6 @@
           <t-dropdown :min-column-width="135" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
-                <t-dropdown-item class="operations-dropdown-container-item" @click="handleNav('/user/index')">
-                  <t-icon name="user-circle"></t-icon>个人中心
-                </t-dropdown-item>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleLogout">
                   <t-icon name="poweroff"></t-icon>退出登录
                 </t-dropdown-item>
@@ -49,7 +35,7 @@
                 <t-icon class="header-user-avatar" name="user-circle" />
               </template>
               <div class="header-user-account">
-                Tencent
+                我滴天哪
                 <t-icon name="chevron-down" />
               </div>
             </t-button>
@@ -71,11 +57,8 @@ import { useRouter } from 'vue-router';
 import { useSettingStore } from '@/store';
 import { getActive } from '@/router';
 import { prefix } from '@/config/global';
-import LogoFull from '@/assets/assets-logo-full.svg?component';
 import { MenuRoute } from '@/types/interface';
 
-import Notice from './Notice.vue';
-import Search from './Search.vue';
 import MenuContent from './MenuContent.vue';
 
 const props = defineProps({
@@ -146,10 +129,6 @@ const handleNav = (url) => {
 
 const handleLogout = () => {
   router.push(`/login?redirect=${router.currentRoute.value.fullPath}`);
-};
-
-const navToGitHub = () => {
-  window.open('https://github.com/tencent/tdesign-vue-next-starter');
 };
 
 const navToHelper = () => {

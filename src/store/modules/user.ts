@@ -1,14 +1,15 @@
 import { defineStore } from 'pinia';
 import { TOKEN_NAME } from '@/config/global';
 import { store, usePermissionStore } from '@/store';
+import { staffLogin, staffLogout } from '@/api/common';
 
 const InitUserInfo = {
-  roles: [],
+  roles: ['all'],
 };
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    token: localStorage.getItem(TOKEN_NAME) || 'main_token', // 默认token不走权限
+    token: localStorage.getItem(TOKEN_NAME) || 'abeer-token', // 默认token不走权限
     userInfo: InitUserInfo,
   }),
   getters: {
@@ -18,39 +19,17 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     async login(userInfo: Record<string, unknown>) {
-      const mockLogin = async (userInfo: Record<string, unknown>) => {
-        // 登录请求流程
-        console.log(userInfo);
-        // const { account, password } = userInfo;
-        // if (account !== 'td') {
-        //   return {
-        //     code: 401,
-        //     message: '账号不存在',
-        //   };
-        // }
-        // if (['main_', 'dev_'].indexOf(password) === -1) {
-        //   return {
-        //     code: 401,
-        //     message: '密码错误',
-        //   };
-        // }
-        // const token = {
-        //   main_: 'main_token',
-        //   dev_: 'dev_token',
-        // }[password];
+      const res: string = await staffLogin({ phone: userInfo.account, pwd: userInfo.password });
+      if (res) {
+        this.token = res;
+        localStorage.setItem(TOKEN_NAME, res);
         return {
-          code: 200,
+          code: 2000,
           message: '登陆成功',
-          data: 'main_token',
+          data: res,
         };
-      };
-
-      const res = await mockLogin(userInfo);
-      if (res.code === 200) {
-        this.token = res.data;
-      } else {
-        throw res;
       }
+      throw res;
     },
     async getUserInfo() {
       const mockRemoteUserInfo = async (token: string) => {
@@ -66,14 +45,16 @@ export const useUserStore = defineStore('user', {
         };
       };
 
-      const res = await mockRemoteUserInfo(this.token);
+      const res = await mockRemoteUserInfo('main_token');
 
+      console.log('getUserInfo', res);
       this.userInfo = res;
     },
     async logout() {
       localStorage.removeItem(TOKEN_NAME);
       this.token = '';
       this.userInfo = InitUserInfo;
+      await staffLogout();
     },
     async removeToken() {
       this.token = '';

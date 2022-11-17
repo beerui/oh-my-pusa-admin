@@ -1,2 +1,2 @@
-export const prefix = 'tdesign-starter';
-export const TOKEN_NAME = 'tdesign-starter';
+export const prefix = 'beer';
+export const TOKEN_NAME = 'BEER_ADMIN_TOKEN';

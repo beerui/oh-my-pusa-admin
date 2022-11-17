@@ -44,7 +44,7 @@ const transform: AxiosTransform = {
     const { code } = data;
 
     // 这里逻辑可以根据项目进行修改
-    const hasSuccess = data && code === 0;
+    const hasSuccess = data && code === 2000;
     if (hasSuccess) {
       return data.data;
     }
@@ -113,7 +113,7 @@ const transform: AxiosTransform = {
     const token = localStorage.getItem(TOKEN_NAME);
     if (token && (config as Recordable)?.requestOptions?.withToken !== false) {
       // jwt token
-      (config as Recordable).headers.Authorization = options.authenticationScheme
+      (config as Recordable).headers['abeer-token'] = options.authenticationScheme
         ? `${options.authenticationScheme} ${token}`
         : token;
     }
