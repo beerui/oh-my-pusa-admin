@@ -45,6 +45,6 @@ export interface AddAppModel {
   favoritesTimes: number
   likeTimes: number
   belong: number
-  belongInfo: string
+  belongingInfo: string
   isEditorChoice: number
 }

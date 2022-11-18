@@ -5,13 +5,6 @@
         <div class="left-operation-container">
           <t-button @click="handleAdd"> 新增 </t-button>
         </div>
-        <div class="search-input">
-          <t-input v-model="searchValue" placeholder="请输入你需要搜索的内容" clearable>
-            <template #suffix-icon>
-              <search-icon size="20px" />
-            </template>
-          </t-input>
-        </div>
       </t-row>
       <t-table
         :data="data"
@@ -25,29 +18,21 @@
         @page-change="rehandlePageChange"
         @change="rehandleChange"
       >
-        <template #status="{ row }">
-          <t-tag v-if="row.status === CONTRACT_STATUS.FAIL" theme="danger" variant="light"> 审核失败 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.AUDIT_PENDING" theme="warning" variant="light"> 待审核 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.EXEC_PENDING" theme="warning" variant="light"> 待履行 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.EXECUTING" theme="success" variant="light"> 履行中 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.FINISH" theme="success" variant="light"> 已完成 </t-tag>
+        <template #categories="{ row }">
+          <t-tag v-for="item in row.categories" class="m-5" theme="success" variant="light">
+            {{ commonStore.GET_CATE_NAME(item) }}
+          </t-tag>
         </template>
-        <template #contractType="{ row }">
-          <p v-if="row.contractType === CONTRACT_TYPES.MAIN">审核失败</p>
-          <p v-if="row.contractType === CONTRACT_TYPES.SUB">待审核</p>
-          <p v-if="row.contractType === CONTRACT_TYPES.SUPPLEMENT">待履行</p>
+        <template #tags="{ row }">
+          <t-tag v-for="item in row.tags" class="m-5" theme="success" variant="light">
+            {{ commonStore.GET_TAG_NAME(item) }}
+          </t-tag>
         </template>
-        <template #paymentType="{ row }">
-          <div v-if="row.paymentType === CONTRACT_PAYMENT_TYPES.PAYMENT" class="payment-col">
-            付款<trend class="dashboard-item-trend" type="up" />
-          </div>
-          <div v-if="row.paymentType === CONTRACT_PAYMENT_TYPES.RECEIPT" class="payment-col">
-            收款<trend class="dashboard-item-trend" type="down" />
-          </div>
+        <template #icon="{ row }">
+          <img class="m-icon" :src="row.icon" alt="" />
         </template>
-
         <template #op="slotProps">
-          <a class="t-button-link" @click="handleClickDetail()">详情</a>
+          <a class="t-button-link" @click="handleClickEdit(slotProps)">编辑</a>
           <a class="t-button-link" @click="handleClickDelete(slotProps)">删除</a>
         </template>
       </t-table>
@@ -71,34 +56,37 @@ export default {
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { SearchIcon } from 'tdesign-icons-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
 
-import { CONTRACT_STATUS, CONTRACT_TYPES, CONTRACT_PAYMENT_TYPES } from '@/constants'
-import Trend from '@/components/trend/index.vue'
-import { useSettingStore } from '@/store'
+import { useRouter } from 'vue-router'
+import { useCommonStore, useSettingStore } from '@/store'
 import { prefix } from '@/config/global'
 
 import { COLUMNS } from './constants'
-import { programList } from '@/api/app'
+import { programDel, programList } from '@/api/app'
 
+const router = useRouter()
+
+const commonStore = useCommonStore()
 const store = useSettingStore()
 
 const data = ref([])
 const pagination = ref({
   defaultPageSize: 20,
-  total: 100,
+  pageSize: 20,
+  current: 1,
+  total: 0,
   defaultCurrent: 1,
 })
-
-const searchValue = ref('')
 
 const dataLoading = ref(false)
 const fetchData = async () => {
   dataLoading.value = true
   try {
-    const { list, total } = await programList({ page: 1, size: pagination.value.defaultPageSize })
+    const { list, total } = await programList({
+      page: pagination.value.current,
+      size: pagination.value.pageSize,
+    })
     data.value = list
     pagination.value = {
       ...pagination.value,
@@ -111,11 +99,10 @@ const fetchData = async () => {
   }
 }
 
-const deleteIdx = ref(-1)
+const chooseId = ref(-1)
 const confirmBody = computed(() => {
-  if (deleteIdx.value > -1) {
-    const { name } = data.value[deleteIdx.value]
-    return `删除后，${name}的所有合同信息将被清空，且无法恢复`
+  if (chooseId.value > -1) {
+    return `删除确认？`
   }
   return ''
 })
@@ -126,24 +113,18 @@ onMounted(() => {
 
 const confirmVisible = ref(false)
 
-const selectedRowKeys = ref([1, 2])
-
-const router = useRouter()
-
 const resetIdx = () => {
-  deleteIdx.value = -1
+  chooseId.value = -1
 }
 
-const onConfirmDelete = () => {
+const onConfirmDelete = async () => {
   // 真实业务请发起请求
-  data.value.splice(deleteIdx.value, 1)
-  pagination.value.total = data.value.length
-  const selectedIdx = selectedRowKeys.value.indexOf(deleteIdx.value)
-  if (selectedIdx > -1) {
-    selectedRowKeys.value.splice(selectedIdx, 1)
+  if (chooseId.value !== -1) {
+    await programDel(chooseId.value)
+    await MessagePlugin.success('删除成功')
+    await fetchData()
+    confirmVisible.value = false
   }
-  confirmVisible.value = false
-  MessagePlugin.success('删除成功')
   resetIdx()
 }
 
@@ -151,23 +132,26 @@ const onCancel = () => {
   resetIdx()
 }
 
-const rowKey = 'index'
+const rowKey = 'id'
 
-const rehandlePageChange = (curr, pageInfo) => {
-  console.log('分页变化', curr, pageInfo)
+const rehandlePageChange = curr => {
+  pagination.value = { ...curr }
 }
-const rehandleChange = (changeParams, triggerAndData) => {
-  console.log('统一Change', changeParams, triggerAndData)
+const rehandleChange = () => {
+  fetchData()
 }
-const handleClickDetail = () => {
-  router.push('/detail/base')
-}
+/**
+ * 新增
+ */
 const handleAdd = () => {
   router.push('/app/handle?type=add')
 }
-const handleClickDelete = (row: { rowIndex: any }) => {
-  deleteIdx.value = row.rowIndex
+const handleClickDelete = (row: { row: any; rowIndex: any }) => {
+  chooseId.value = row.row.id
   confirmVisible.value = true
+}
+const handleClickEdit = (row: { row: any }) => {
+  router.push(`/app/handle?type=edit&id=${row.row.id}`)
 }
 
 const offsetTop = computed(() => {
@@ -203,5 +187,12 @@ const getContainer = () => {
 
 .search-input {
   width: 360px;
+}
+.m-icon {
+  width: 40px;
+  height: 40px;
+}
+.m-5 {
+  margin: 5px;
 }
 </style>

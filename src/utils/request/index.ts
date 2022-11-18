@@ -6,9 +6,9 @@ import { VAxios } from './Axios'
 import proxy from '@/config/proxy'
 import { joinTimestamp, formatRequestDate, setObjToUrlParams } from './utils'
 import { TOKEN_NAME } from '@/config/global'
+import router from '@/router'
 
 const env = import.meta.env.MODE || 'development'
-
 // 如果是mock模式 或 没启用直连代理 就不配置host 会走本地Mock拦截 或 Vite 代理
 const host = env === 'mock' || !proxy.isRequestProxy ? '' : proxy[env].host
 
@@ -45,6 +45,7 @@ const transform: AxiosTransform = {
 
     const tokens = [4031, 4032, 4033]
     if (tokens.includes(code)) {
+      router.replace('/loginRedirect')
       throw new Error('token问题')
     }
     // 这里逻辑可以根据项目进行修改

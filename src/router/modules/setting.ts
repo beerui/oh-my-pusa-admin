@@ -11,7 +11,7 @@ export default [
     children: [
       {
         path: 'config',
-        name: 'ListBase',
+        name: 'SettingConfig',
         component: () => import('@/pages/setting/config/index.vue'),
         meta: { title: '基础配置' },
       },

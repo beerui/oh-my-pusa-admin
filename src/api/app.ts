@@ -18,9 +18,20 @@ export function programAdd(query) {
     data: query,
   })
 }
+export function programUpdate(query) {
+  return request.post<AddAppModel>({
+    url: '/app/program/update',
+    data: query,
+  })
+}
 export function programDel(id) {
   return request.get({
     url: `/app/program/del?id=${id}`,
+  })
+}
+export function programDetail(id) {
+  return request.get({
+    url: `/app/program/detail?id=${id}`,
   })
 }
 

@@ -13,10 +13,13 @@ export function staffLogout() {
   })
 }
 
-export function uploadFile(file) {
+/**
+ * 微信小程序信息管理
+ * @param query
+ */
+export function wechatConfig(query) {
   return request.post({
-    url: 'https://file.beer-ui.com/file-api/file/upload',
-    headers: { 'Content-Type': 'multipart/form-data;charset=UTF-8' },
-    data: file,
+    url: '/wechat/mini/app/add',
+    data: query
   })
 }

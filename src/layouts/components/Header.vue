@@ -9,7 +9,6 @@
           <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
             <t-icon class="collapsed-icon" name="view-list" />
           </t-button>
-          <search :layout="layout" />
         </div>
       </template>
       <template v-if="layout !== 'side'" #default>

@@ -44,30 +44,40 @@
           <t-col :span="6">
             <t-form-item label="类别" name="categories">
               <t-select v-model="formData.categories" placeholder="请选择" multiple>
-                <t-option v-for="item in categories" :key="item.id" :value="item.id" :label="item.name"></t-option>
+                <t-option
+                  v-for="item in commonStore.GET_CATE_LIST"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item.name"
+                ></t-option>
               </t-select>
             </t-form-item>
           </t-col>
           <t-col :span="6">
             <t-form-item label="标签" name="tags">
               <t-select v-model="formData.tags" placeholder="请选择" multiple>
-                <t-option v-for="item in tags" :key="item.id" :value="item.id" :label="item.name"></t-option>
+                <t-option
+                  v-for="item in commonStore.GET_TAG_LIST"
+                  :key="item.id"
+                  :value="item.id"
+                  :label="item.name"
+                ></t-option>
               </t-select>
             </t-form-item>
           </t-col>
           <t-col :span="12">
             <t-form-item label="应用归属" name="belong">
               <t-radio-group v-model="formData.belong" default-value="1">
-                <t-radio allow-uncheck value="1">自有-集成在小程序中</t-radio>
-                <t-radio allow-uncheck value="2">自有-外部发布的小程序</t-radio>
-                <t-radio allow-uncheck value="3">第三方-小程序</t-radio>
-                <t-radio value="4">其他</t-radio>
+                <t-radio allow-uncheck :value="1">默认（集成在小程序中）</t-radio>
+                <t-radio allow-uncheck :value="2">自有-外部发布的小程序</t-radio>
+                <t-radio allow-uncheck :value="3">第三方-小程序</t-radio>
+                <t-radio :value="4">其他</t-radio>
               </t-radio-group>
             </t-form-item>
           </t-col>
           <t-col :span="12">
             <t-form-item label="补充内容（自有：路径 外部：appid 第三方：appid 其它：自定义）" name="belongInfo">
-              <t-input v-model="formData.belongInfo" placeholder="请输入内容" />
+              <t-input v-model="formData.belongingInfo" placeholder="请输入内容" />
             </t-form-item>
           </t-col>
           <t-col :span="6">
@@ -77,7 +87,7 @@
           </t-col>
           <t-col :span="6">
             <t-form-item label="编辑推荐" name="isEditorChoice">
-              <t-radio-group v-model="formData.isEditorChoice" default-value="0">
+              <t-radio-group v-model="formData.isEditorChoice" :default-value="0">
                 <t-radio :value="0">否</t-radio>
                 <t-radio :value="1">是</t-radio>
               </t-radio-group>
@@ -92,8 +102,10 @@
       </div>
     </div>
     <div class="form-submit-container">
-      <t-button theme="primary" class="form-submit-confirm" type="submit"> 提交 </t-button>
-      <t-button type="reset" class="form-submit-cancel" theme="default" variant="base"> 取消 </t-button>
+      <t-button theme="primary" class="form-submit-confirm" type="submit">
+        {{ pageType === 'add' ? '新增' : '更新' }}
+      </t-button>
+      <t-button type="reset" class="form-submit-cancel" theme="default" variant="base"> 返回 </t-button>
     </div>
   </t-form>
 </template>
@@ -105,12 +117,15 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeMount, reactive, ref } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
-import { useRoute } from 'vue-router'
-import { programAdd, tagList, categoryList } from '@/api/app'
+import { useRoute, useRouter } from 'vue-router'
+import { programAdd, programDetail, programUpdate } from '@/api/app'
+import { useCommonStore } from '@/store'
+import { AddAppModel } from '@/api/model/appModel'
 
 const route = useRoute()
+const router = useRouter()
 const pageType = route.query.type
 const FORM_RULES = {
   name: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
@@ -129,66 +144,82 @@ const FORM_RULES = {
     { required: true, message: '此项必选', type: 'warning', trigger: 'change' },
   ],
   belong: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
-  belongInfo: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
+  belongingInfo: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
 }
 /**
  * 类别 标签
  */
-const tags = ref([])
-const categories = ref([])
-tagList({ page: 1, size: 99 }).then(res => {
-  tags.value = res.list
+const commonStore = useCommonStore()
+/**
+ * 判断是新增还是修改
+ */
+onBeforeMount(async () => {
+  if (pageType === 'edit') {
+    const { id } = route.query
+    const res = await programDetail(id)
+    for (const resKey in res) {
+      formData[resKey] = res[resKey]
+    }
+    formData.id = Number(id)
+    if (formData.icon) {
+      filesIcon.value = [
+        {
+          status: 'success',
+          uploadTime: '编辑 不展示',
+          response: {
+            url: formData.icon,
+          },
+          url: formData.icon,
+        },
+      ]
+    }
+  }
 })
-categoryList({ page: 1, size: 99 }).then(res => {
-  categories.value = res.list
-})
+
 const filesIcon = ref([])
-// const formData = reactive({
-//   name: '',
-//   descr: '',
-//   evaluation: '',
-//   icon: '',
-//   score: 0,
-//   weight: 100,
-//   belong: 1,
-//   belongInfo: '',
-//   isEditorChoice: 0, // 0 否 1 是
-//   categories: [],
-//   tags: [],
-// });
-const formData = {
-  name: '手持弹幕',
-  descr: '手机滚动弹幕，手持弹幕，滚动字幕表白，LED滚动弹幕屏，手机换身追星灯牌！',
-  evaluation:
-    '## 主要内容\n手机滚动弹幕，手持弹幕，滚动字幕表白，LED滚动弹幕屏，手机换身追星灯牌！∂\n1. 滚动弹幕\n2. 接机牌\n\n## 自定义设置内容\n\n### 滚动弹幕\n1. 弹幕文字\n2. 字体大小\n3. 滚动方向\n4. 滚动速度\n5. 字体颜色\n6. 阴影颜色\n7. 背景颜色\n\n### 接机牌\n1. 弹幕文字\n2. 字体大小\n3. 动画效果\n4. 滚动速度\n5. 字体颜色\n6. 阴影颜色\n7. 背景颜色\n\n## 使用方法\n点击空白处出现设置选项\n\n## 评价\n无广告且配置项目多。',
-  icon: '//file.beer-ui.com/upload/album/b4293921fe4b1.jpg',
-  score: '8.00',
-  weight: '10',
-  belong: '1',
-  belongInfo: 'pages/tools/danmu/index',
-  isEditorChoice: 1,
-  categories: [3, 1],
-  tags: [3, 13, 12, 14],
-}
+let formData = reactive({
+  name: '',
+  descr: '',
+  evaluation: '',
+  icon: '',
+  score: 0,
+  weight: 100,
+  belong: 1,
+  belongingInfo: '',
+  isEditorChoice: 0, // 0 否 1 是
+  categories: [],
+  tags: [],
+} as AddAppModel)
 const onReset = () => {
-  MessagePlugin.warning('取消新建')
+  router.back()
 }
 const onSubmit = ({ validateResult }) => {
-  console.log('formData', formData)
   if (filesIcon.value.length === 0) {
     MessagePlugin.error('图标未传')
     return
   }
   formData.icon = filesIcon.value[0].response.url
   if (validateResult === true) {
-    programAdd(formData)
-      .then(res => {
-        console.log(res)
-        MessagePlugin.success('新建成功')
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    if (pageType === 'add') {
+      programAdd(formData)
+        .then(res => {
+          MessagePlugin.success('新建成功')
+          router.back()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    if (pageType === 'edit') {
+      programUpdate(formData)
+        .then(res => {
+          MessagePlugin.success('更新成功')
+          router.back()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }
 }
 </script>

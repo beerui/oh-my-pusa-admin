@@ -2,8 +2,8 @@
   <div :class="sideNavCls">
     <t-menu :class="menuCls" :theme="theme" :value="active" :collapsed="collapsed" :default-expanded="defaultExpanded">
       <template #logo>
-        <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome">
-          <img class="logo" src="@/assets/logo.jpg" />
+        <span v-if="showLogo" class="m-logo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome">
+          <img class="logo" src="@/assets/logo.jpg" /> <span class="m-logo-name">我滴天哪</span>
         </span>
       </template>
       <menu-content :nav-data="menu" />
@@ -122,5 +122,13 @@ const goHome = () => {
   height: 40px;
   border-radius: 50%;
   margin-left: 20px;
+}
+.m-logo {
+  display: flex;
+  align-items: center;
+  &-name {
+    margin-left: 20px;
+    font-size: 18px;
+  }
 }
 </style>

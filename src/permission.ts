@@ -2,7 +2,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 
-import { getPermissionStore, getUserStore } from '@/store'
+import { getCommonStore, getPermissionStore, getUserStore } from '@/store'
 import router from '@/router'
 
 NProgress.configure({ showSpinner: false })
@@ -12,6 +12,7 @@ router.beforeEach(async (to, from, next) => {
 
   const userStore = getUserStore()
   const permissionStore = getPermissionStore()
+  const commonStore = getCommonStore()
   const { whiteListRouters } = permissionStore
 
   const { token } = userStore
@@ -21,6 +22,7 @@ router.beforeEach(async (to, from, next) => {
       return
     }
 
+    await commonStore.initCommon() // 全局常量接口
     const { roles } = userStore
 
     if (roles && roles.length > 0) {
@@ -29,7 +31,6 @@ router.beforeEach(async (to, from, next) => {
       try {
         await userStore.getUserInfo()
 
-        console.log('userStore', userStore)
         const { roles } = userStore
 
         await permissionStore.initRoutes(roles)
