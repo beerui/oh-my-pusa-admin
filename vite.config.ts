@@ -19,6 +19,9 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       },
     },
 
+    build: {
+      outDir: 'website',
+    },
     css: {
       preprocessorOptions: {
         less: {
