@@ -176,14 +176,14 @@ const dataLoading = ref(false)
 const fetchData = async () => {
   dataLoading.value = true
   try {
-    const { rows, total } = await storyList({
+    const { rows, count } = await storyList({
       page: pagination.value.current,
       size: pagination.value.pageSize,
     })
     data.value = rows
     pagination.value = {
       ...pagination.value,
-      total,
+      total: count,
     }
   } catch (e) {
     console.log(e)

@@ -3,11 +3,8 @@
     <t-card class="list-card-container">
       <t-row justify="space-between">
         <div class="left-operation-container">
-          <t-form>
-            <t-form-item label-width="0">
-              <t-button @click="handleAdd"> 新增 </t-button>
-            </t-form-item>
-          </t-form>
+          <t-button @click="handleAdd"> 新增 </t-button>
+          <t-button @click="fetchData"> 刷新 </t-button>
         </div>
       </t-row>
       <t-table
@@ -175,15 +172,21 @@ const onSubmit = ({ validateResult }) => {
       questionAdd(queryForm)
         .then(res => {
           MessagePlugin.success('新建成功')
-          handleVisible.value = false
-          fetchData()
+          // handleVisible.value = false
+          // fetchData()
+          queryForm.title = ''
+          queryForm.section = []
+          queryForm.answer = ''
+          queryForm.tag = ''
         })
         .catch(err => {
           console.log(err)
         })
     }
     if (handleType.value === 'edit') {
-      const section = queryForm.section.map(el => {return { name: el.name }})
+      const section = queryForm.section.map(el => {
+        return { name: el.name }
+      })
       const query = {
         ...queryForm,
         section,
@@ -218,14 +221,14 @@ const dataLoading = ref(false)
 const fetchData = async () => {
   dataLoading.value = true
   try {
-    const { rows, total } = await questionList({
+    const { rows, count } = await questionList({
       page: pagination.value.current,
       size: pagination.value.pageSize,
     })
     data.value = rows
     pagination.value = {
       ...pagination.value,
-      total,
+      total: count,
     }
   } catch (e) {
     console.log(e)
