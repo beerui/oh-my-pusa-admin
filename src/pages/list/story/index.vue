@@ -264,6 +264,7 @@ const handleClickEdit = async (row: { row: any; rowIndex: any }) => {
     for (const resKey in res) {
       queryForm[resKey] = res[resKey]
     }
+    queryForm.tag = Number(queryForm.tag)
     handleVisible.value = true
   })
 }
