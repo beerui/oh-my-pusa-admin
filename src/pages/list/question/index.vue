@@ -82,12 +82,12 @@
                   </t-col>
                 </t-row>
               </t-col>
-              <t-col :span="12">
+              <t-col :span="12" v-if="handleVisible">
                 <t-form-item label="答案" name="answer">
                   <t-select v-model="queryForm.answer" placeholder="请选择">
                     <t-option
                       v-for="(item, index) in queryForm.section"
-                      :key="index"
+                      :key="item.name"
                       :value="index"
                       :label="item.name"
                     ></t-option>
