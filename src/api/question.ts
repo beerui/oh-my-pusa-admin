@@ -101,7 +101,7 @@ export function storyDel(id) {
 export function storyDetail(id) {
   return request.get(
     {
-      url: `/question/detail?id=${id}`,
+      url: `/story/detail?id=${id}`,
     },
     { urlPrefix: '/api-cms' }
   )
