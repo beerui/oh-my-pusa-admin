@@ -3,16 +3,11 @@
     <t-card class="list-card-container">
       <t-row justify="space-between">
         <div class="left-operation-container">
-          <t-button @click="handleSetupContract"> 新建合同 </t-button>
-          <t-button variant="base" theme="default" :disabled="!selectedRowKeys.length"> 导出合同 </t-button>
-          <p v-if="!!selectedRowKeys.length" class="selected-count">已选{{ selectedRowKeys.length }}项</p>
-        </div>
-        <div class="search-input">
-          <t-input v-model="searchValue" placeholder="请输入你需要搜索的内容" clearable>
-            <template #suffix-icon>
-              <search-icon size="20px" />
-            </template>
-          </t-input>
+          <t-form>
+            <t-form-item label-width="0">
+              <t-button @click="handleAdd"> 新增 </t-button>
+            </t-form-item>
+          </t-form>
         </div>
       </t-row>
       <t-table
@@ -22,36 +17,18 @@
         vertical-align="top"
         :hover="true"
         :pagination="pagination"
-        :selected-row-keys="selectedRowKeys"
         :loading="dataLoading"
         :header-affixed-top="{ offsetTop, container: getContainer }"
         @page-change="rehandlePageChange"
         @change="rehandleChange"
-        @select-change="rehandleSelectChange"
       >
-        <template #status="{ row }">
-          <t-tag v-if="row.status === CONTRACT_STATUS.FAIL" theme="danger" variant="light"> 审核失败 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.AUDIT_PENDING" theme="warning" variant="light"> 待审核 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.EXEC_PENDING" theme="warning" variant="light"> 待履行 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.EXECUTING" theme="success" variant="light"> 履行中 </t-tag>
-          <t-tag v-if="row.status === CONTRACT_STATUS.FINISH" theme="success" variant="light"> 已完成 </t-tag>
+        <template #tag="{ row }">
+          <t-tag class="m-5" theme="success" variant="light">
+            {{ getTagName(row.tag) }}
+          </t-tag>
         </template>
-        <template #contractType="{ row }">
-          <p v-if="row.contractType === CONTRACT_TYPES.MAIN">审核失败</p>
-          <p v-if="row.contractType === CONTRACT_TYPES.SUB">待审核</p>
-          <p v-if="row.contractType === CONTRACT_TYPES.SUPPLEMENT">待履行</p>
-        </template>
-        <template #paymentType="{ row }">
-          <div v-if="row.paymentType === CONTRACT_PAYMENT_TYPES.PAYMENT" class="payment-col">
-            付款<trend class="dashboard-item-trend" type="up" />
-          </div>
-          <div v-if="row.paymentType === CONTRACT_PAYMENT_TYPES.RECEIPT" class="payment-col">
-            收款<trend class="dashboard-item-trend" type="down" />
-          </div>
-        </template>
-
         <template #op="slotProps">
-          <a class="t-button-link" @click="handleClickDetail()">详情</a>
+          <a class="t-button-link" @click="handleClickEdit(slotProps)">修改</a>
           <a class="t-button-link" @click="handleClickDelete(slotProps)">删除</a>
         </template>
       </t-table>
@@ -59,54 +36,189 @@
 
     <t-dialog
       v-model:visible="confirmVisible"
-      header="确认删除当前所选合同？"
+      header="确认删除当前所选？"
       :body="confirmBody"
       :on-cancel="onCancel"
       @confirm="onConfirmDelete"
     />
+    <t-dialog
+      v-model:visible="handleVisible"
+      :header="handleType === 'add' ? '新增' : '编辑'"
+      :footer="false"
+      width="60%"
+      :on-cancel="onCancel"
+      @confirm="onConfirmDelete"
+    >
+      <t-form
+        ref="form"
+        class="base-form"
+        :data="queryForm"
+        :rules="FORM_RULES"
+        label-align="left"
+        :label-width="60"
+        @reset="onReset"
+        @submit="onSubmit"
+      >
+        <div class="form-basic-container">
+          <div class="form-basic-item">
+            <t-row class="row-gap" :gutter="[0, 6]">
+              <t-col :span="12">
+                <t-form-item label="题目" name="title">
+                  <t-textarea v-model="queryForm.title" placeholder="请输入内容" />
+                </t-form-item>
+              </t-col>
+              <t-col :span="12">
+                <t-form-item label="选项" name="section">
+                  <t-button @click="addAnswer">新增选项</t-button>
+                </t-form-item>
+              </t-col>
+              <t-col :span="12">
+                <t-row v-for="(item, index) in queryForm.section" style="margin-bottom: 3px">
+                  <t-col :span="2"
+                    ><t-tag>选项 {{ index }}</t-tag></t-col
+                  >
+                  <t-col :span="8">
+                    <t-textarea v-model="item.name" placeholder="请输入内容" />
+                  </t-col>
+                  <t-col :span="2">
+                    <t-button style="margin-left: 10px" @click="delAnswer(index)">删除</t-button>
+                  </t-col>
+                </t-row>
+              </t-col>
+              <t-col :span="12">
+                <t-form-item label="答案" name="answer">
+                  <t-select v-model="queryForm.answer" placeholder="请选择">
+                    <t-option
+                      v-for="(item, index) in queryForm.section"
+                      :key="index"
+                      :value="index"
+                      :label="item.name"
+                    ></t-option>
+                  </t-select>
+                </t-form-item>
+              </t-col>
+              <t-col :span="12">
+                <t-form-item label="标签" name="tag">
+                  <t-select v-model="queryForm.tag" placeholder="请选择">
+                    <t-option v-for="item in tags" :key="item.id" :value="item.id" :label="item.name"></t-option>
+                  </t-select>
+                </t-form-item>
+              </t-col>
+            </t-row>
+          </div>
+        </div>
+        <t-button theme="primary" class="form-submit-confirm" type="submit">
+          {{ handleType === 'add' ? '新增' : '更新' }}
+        </t-button>
+      </t-form>
+    </t-dialog>
   </div>
 </template>
 
 <script lang="ts">
 export default {
-  name: 'ListBase',
+  name: 'ListQuestion',
 }
 </script>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { SearchIcon } from 'tdesign-icons-vue-next'
+import { ref, onMounted, computed, reactive } from 'vue'
 import { MessagePlugin } from 'tdesign-vue-next'
 
-import { CONTRACT_STATUS, CONTRACT_TYPES, CONTRACT_PAYMENT_TYPES } from '@/constants'
-import Trend from '@/components/trend/index.vue'
-import { getList } from '@/api/list'
 import { useSettingStore } from '@/store'
 import { prefix } from '@/config/global'
 
 import { COLUMNS } from './constants'
+import { questionAdd, questionDel, questionDetail, questionList, questionTagList, questionUpdate } from '@/api/question'
 
 const store = useSettingStore()
 
+const tags = ref([])
+const fetchTag = async () => {
+  if (tags.value.length !== 0) {
+    return Promise.resolve(tags.value)
+  }
+  const res = await questionTagList()
+  tags.value = res.rows
+  return Promise.resolve(tags.value)
+}
+const getTagName = id => {
+  if (tags.value.length === 0) return ''
+  const findIdx = id => tags.value.findIndex(el => el.id === id)
+  if (!id) return '*'
+  if (findIdx(id) < 0) return '-'
+  return tags.value[findIdx(id)].name
+}
+const queryForm = reactive({
+  title: '',
+  section: [],
+  answer: '',
+  tag: '',
+})
+const FORM_RULES = {
+  title: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
+  section: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],
+  answer: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],
+  tag: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],
+}
+const onReset = () => {}
+const onSubmit = ({ validateResult }) => {
+  if (validateResult === true) {
+    if (handleType.value === 'add') {
+      questionAdd(queryForm)
+        .then(res => {
+          MessagePlugin.success('新建成功')
+          handleVisible.value = false
+          fetchData()
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    if (handleType.value === 'edit') {
+      const section = queryForm.section.map(el => {return { name: el.name }})
+      const query = {
+        ...queryForm,
+        section,
+      }
+      questionUpdate(query)
+        .then(res => {
+          MessagePlugin.success('更新成功')
+          handleVisible.value = false
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+}
 const data = ref([])
+const addAnswer = () => {
+  queryForm.section.push({ name: '' })
+}
+const delAnswer = index => {
+  queryForm.section.splice(index, 1)
+}
 const pagination = ref({
   defaultPageSize: 20,
-  total: 100,
+  pageSize: 20,
+  current: 1,
+  total: 0,
   defaultCurrent: 1,
 })
-
-const searchValue = ref('')
 
 const dataLoading = ref(false)
 const fetchData = async () => {
   dataLoading.value = true
   try {
-    const { list } = await getList()
-    data.value = list
+    const { rows, total } = await questionList({
+      page: pagination.value.current,
+      size: pagination.value.pageSize,
+    })
+    data.value = rows
     pagination.value = {
       ...pagination.value,
-      total: list.length,
+      total,
     }
   } catch (e) {
     console.log(e)
@@ -115,68 +227,81 @@ const fetchData = async () => {
   }
 }
 
-const deleteIdx = ref(-1)
+const chooseId = ref(-1)
 const confirmBody = computed(() => {
-  if (deleteIdx.value > -1) {
-    const { name } = data.value[deleteIdx.value]
-    return `删除后，${name}的所有合同信息将被清空，且无法恢复`
+  if (chooseId.value > -1) {
+    return `删除确认？`
   }
   return ''
 })
 
 onMounted(() => {
+  fetchTag()
   fetchData()
 })
 
 const confirmVisible = ref(false)
 
-const selectedRowKeys = ref([1, 2])
-
-const router = useRouter()
-
 const resetIdx = () => {
-  deleteIdx.value = -1
+  chooseId.value = -1
 }
 
-const onConfirmDelete = () => {
+const onConfirmDelete = async () => {
   // 真实业务请发起请求
-  data.value.splice(deleteIdx.value, 1)
-  pagination.value.total = data.value.length
-  const selectedIdx = selectedRowKeys.value.indexOf(deleteIdx.value)
-  if (selectedIdx > -1) {
-    selectedRowKeys.value.splice(selectedIdx, 1)
+  if (chooseId.value !== -1) {
+    await questionDel(chooseId.value)
+    fetchData()
+    MessagePlugin.success('删除成功')
+    confirmVisible.value = false
   }
-  confirmVisible.value = false
-  MessagePlugin.success('删除成功')
   resetIdx()
 }
+
+const handleVisible = ref(false)
+const handleType = ref('add')
 
 const onCancel = () => {
   resetIdx()
 }
 
-const rowKey = 'index'
+const rowKey = 'id'
 
-const rehandleSelectChange = (val: number[]) => {
-  selectedRowKeys.value = val
+const rehandlePageChange = curr => {
+  // console.log('分页变化', curr, pageInfo);
+  pagination.value = { ...curr }
 }
-const rehandlePageChange = (curr, pageInfo) => {
-  console.log('分页变化', curr, pageInfo)
+const rehandleChange = () => {
+  // console.log('统一Change', changeParams, triggerAndData);
+  fetchData()
 }
-const rehandleChange = (changeParams, triggerAndData) => {
-  console.log('统一Change', changeParams, triggerAndData)
+/**
+ * 新增
+ */
+const handleAdd = async () => {
+  handleType.value = 'add'
+  if (tags.value.length === 0) {
+    await fetchTag()
+  }
+  handleVisible.value = true
 }
-const handleClickDetail = () => {
-  router.push('/detail/base')
-}
-const handleSetupContract = () => {
-  router.push('/form/base')
-}
-const handleClickDelete = (row: { rowIndex: any }) => {
-  deleteIdx.value = row.rowIndex
+const handleClickDelete = (row: { row: any; rowIndex: any }) => {
+  chooseId.value = row.row.id
   confirmVisible.value = true
 }
-
+const handleClickEdit = async (row: { row: any; rowIndex: any }) => {
+  handleType.value = 'edit'
+  if (tags.value.length === 0) {
+    await fetchTag()
+  }
+  chooseId.value = row.row.id
+  queryForm.id = Number(chooseId.value)
+  questionDetail(chooseId.value).then(res => {
+    for (const resKey in res) {
+      queryForm[resKey] = res[resKey]
+    }
+    handleVisible.value = true
+  })
+}
 const offsetTop = computed(() => {
   return store.isUseTabsRouter ? 48 : 0
 })

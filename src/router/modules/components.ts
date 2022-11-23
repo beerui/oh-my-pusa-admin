@@ -1,5 +1,10 @@
 import Layout from '@/layouts/index.vue'
 import ListIcon from '@/assets/assets-slide-list.svg'
+import AppIcon from '@/assets/app.svg'
+import ApplicationIcon from '@/assets/application.svg'
+import StoryIcon from '@/assets/story.svg'
+import QuestionIcon from '@/assets/question.svg'
+import TagIcon from '@/assets/tag.svg'
 
 export default [
   {
@@ -7,7 +12,7 @@ export default [
     name: 'app',
     component: Layout,
     redirect: '/app/list',
-    meta: { title: '应用列表', icon: ListIcon },
+    meta: { title: '应用列表', icon: ApplicationIcon },
     children: [
       {
         path: 'list',
@@ -28,7 +33,7 @@ export default [
     name: 'tag',
     component: Layout,
     redirect: '/tag/list',
-    meta: { title: '标签列表', icon: ListIcon },
+    meta: { title: '标签列表', icon: TagIcon },
     children: [
       {
         path: 'list',
@@ -58,7 +63,7 @@ export default [
     name: 'question',
     component: Layout,
     redirect: '/question/list',
-    meta: { title: '题目列表', icon: ListIcon },
+    meta: { title: '题目列表', icon: QuestionIcon },
     children: [
       {
         path: 'list',
@@ -73,13 +78,28 @@ export default [
     name: 'story',
     component: Layout,
     redirect: '/story/list',
-    meta: { title: '故事列表', icon: ListIcon },
+    meta: { title: '故事列表', icon: StoryIcon },
     children: [
       {
         path: 'list',
         name: 'ListStory',
         component: () => import('@/pages/list/story/index.vue'),
         meta: { title: '故事列表', hidden: true },
+      },
+    ],
+  },
+  {
+    path: '/miniApp',
+    name: 'MiniApp',
+    component: Layout,
+    redirect: '/miniApp/list',
+    meta: { title: '小程序列表', icon: AppIcon },
+    children: [
+      {
+        path: 'list',
+        name: 'ListMiniApp',
+        component: () => import('@/pages/list/miniApp/index.vue'),
+        meta: { title: '小程序列表', hidden: true },
       },
     ],
   },

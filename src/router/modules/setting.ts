@@ -1,5 +1,5 @@
 import Layout from '@/layouts/index.vue'
-import ListIcon from '@/assets/assets-slide-list.svg'
+import SettingIcon from '@/assets/setting.svg'
 
 export default [
   {
@@ -7,7 +7,7 @@ export default [
     name: 'setting',
     component: Layout,
     redirect: '/setting/config',
-    meta: { title: '系统管理', icon: ListIcon },
+    meta: { title: '系统管理', icon: SettingIcon },
     children: [
       {
         path: 'config',

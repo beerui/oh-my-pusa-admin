@@ -33,7 +33,7 @@
 
     <t-dialog
       v-model:visible="confirmVisible"
-      header="确认删除当前所选合同？"
+      header="确认删除当前所选？"
       :body="confirmBody"
       :on-cancel="onCancel"
       @confirm="onConfirmDelete"

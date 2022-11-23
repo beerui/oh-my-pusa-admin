@@ -34,6 +34,39 @@ export function programDetail(id) {
     url: `/app/program/detail?id=${id}`,
   })
 }
+/**
+ * 小程序列表
+ * @param query
+ */
+export function miniAppList(query) {
+  return request.post<AppListResult>({
+    url: '/wechat/mini/app/list',
+    data: query,
+  })
+}
+
+export function miniAppAdd(query) {
+  return request.post<AddAppModel>({
+    url: '/wechat/mini/app/add',
+    data: query,
+  })
+}
+export function miniAppUpdate(query) {
+  return request.post<AddAppModel>({
+    url: '/wechat/mini/app/update',
+    data: query,
+  })
+}
+export function miniAppDel(id) {
+  return request.get({
+    url: `/wechat/mini/app/del?id=${id}`,
+  })
+}
+export function miniAppDetail(id) {
+  return request.get({
+    url: `/wechat/mini/app/detail?id=${id}`,
+  })
+}
 
 /**
  * 应用类别

@@ -22,11 +22,6 @@
         @page-change="rehandlePageChange"
         @change="rehandleChange"
       >
-        <template #tag="{ row }">
-          <t-tag class="m-5" theme="success" variant="light">
-            {{ getTagName(Number(row.tag)) }}
-          </t-tag>
-        </template>
         <template #op="slotProps">
           <a class="t-button-link" @click="handleClickEdit(slotProps)">修改</a>
           <a class="t-button-link" @click="handleClickDelete(slotProps)">删除</a>
@@ -54,26 +49,49 @@
         :data="queryForm"
         :rules="FORM_RULES"
         label-align="left"
-        :label-width="60"
+        :label-width="160"
         @reset="onReset"
         @submit="onSubmit"
       >
-        <t-row class="row-gap" :gutter="[0, 6]">
-          <t-col :span="12">
-            <t-form-item label="标题" name="title">
-              <t-textarea v-model="queryForm.title" placeholder="请输入内容" />
+        <t-row class="row-gap" :gutter="[16, 24]">
+          <t-col :span="6">
+            <t-form-item label="小程序名称（全局）" name="name">
+              <t-input v-model="queryForm.name" :style="{ width: '322px' }" placeholder="请输入内容" />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="邮箱" name="email">
+              <t-input v-model="queryForm.email" :style="{ width: '322px' }" placeholder="请输入内容" />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="版本信息" name="version">
+              <t-input v-model="queryForm.version" :style="{ width: '322px' }" placeholder="请输入内容" />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="官方网站" name="officialSite">
+              <t-input v-model="queryForm.officialSite" :style="{ width: '322px' }" placeholder="请输入内容" />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="appid(标注)" name="miniAppId">
+              <t-input v-model="queryForm.miniAppId" :style="{ width: '322px' }" placeholder="请输入内容" />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="secret(标注)" name="miniAppSecret">
+              <t-input v-model="queryForm.miniAppSecret" :style="{ width: '322px' }" placeholder="请输入内容" />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="appid(本平台)" name="appId">
+              <t-input v-model="queryForm.appId" :style="{ width: '322px' }" placeholder="请输入内容" />
             </t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="标签" name="tag">
-              <t-select v-model="queryForm.tag" placeholder="请选择">
-                <t-option v-for="item in tags" :key="item.id" :value="item.id" :label="item.name"></t-option>
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="内容" name="content">
-              <v-md-editor v-model="queryForm.content" height="400px"></v-md-editor>
+            <t-form-item label="关于我们" name="descr">
+              <t-textarea v-model="queryForm.descr" :style="{ width: '322px' }" placeholder="请输入内容" />
             </t-form-item>
           </t-col>
         </t-row>
@@ -87,7 +105,7 @@
 
 <script lang="ts">
 export default {
-  name: 'ListStory',
+  name: 'ListMiniApp',
 }
 </script>
 
@@ -99,42 +117,35 @@ import { useSettingStore } from '@/store'
 import { prefix } from '@/config/global'
 
 import { COLUMNS } from './constants'
-import { storyAdd, storyDel, storyDetail, storyList, questionTagList, storyUpdate } from '@/api/question'
+import { miniAppAdd, miniAppDel, miniAppDetail, miniAppList, miniAppUpdate } from '@/api/app'
 
 const store = useSettingStore()
 
-const tags = ref([])
-const fetchTag = async () => {
-  if (tags.value.length !== 0) {
-    return Promise.resolve(tags.value)
-  }
-  const res = await questionTagList()
-  tags.value = res.rows
-  return Promise.resolve(tags.value)
-}
-const getTagName = id => {
-  if (tags.value.length === 0) return ''
-  const findIdx = id => tags.value.findIndex(el => el.id === id)
-  if (!id) return '*'
-  if (findIdx(id) < 0) return '-'
-  return tags.value[findIdx(id)].name
-}
 const queryForm = reactive({
-  title: '',
-  section: [],
-  answer: '',
-  tag: '',
+  appId: '',
+  miniAppId: '',
+  miniAppSecret: '',
+  name: '',
+  descr: '',
+  email: '',
+  version: '',
+  officialSite: '',
 })
 const FORM_RULES = {
-  title: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
-  content: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],
-  tag: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],
+  appId: [{ required: true }],
+  miniAppId: [{ required: true }],
+  miniAppSecret: [{ required: true }],
+  name: [{ required: true }],
+  descr: [{ required: true }],
+  email: [{ required: true }],
+  version: [{ required: true }],
+  officialSite: [{ required: true }],
 }
 const onReset = () => {}
 const onSubmit = ({ validateResult }) => {
   if (validateResult === true) {
     if (handleType.value === 'add') {
-      storyAdd(queryForm)
+      miniAppAdd(queryForm)
         .then(res => {
           MessagePlugin.success('新建成功')
           handleVisible.value = false
@@ -145,14 +156,7 @@ const onSubmit = ({ validateResult }) => {
         })
     }
     if (handleType.value === 'edit') {
-      const section = queryForm.section.map(el => {
-        return { name: el.name }
-      })
-      const query = {
-        ...queryForm,
-        section,
-      }
-      storyUpdate(query)
+      miniAppUpdate(queryForm)
         .then(res => {
           MessagePlugin.success('更新成功')
           handleVisible.value = false
@@ -164,12 +168,6 @@ const onSubmit = ({ validateResult }) => {
   }
 }
 const data = ref([])
-const addAnswer = () => {
-  queryForm.section.push({ name: '' })
-}
-const delAnswer = index => {
-  queryForm.section.splice(index, 1)
-}
 const pagination = ref({
   defaultPageSize: 20,
   pageSize: 20,
@@ -182,11 +180,11 @@ const dataLoading = ref(false)
 const fetchData = async () => {
   dataLoading.value = true
   try {
-    const { rows, total } = await storyList({
+    const { list, total } = await miniAppList({
       page: pagination.value.current,
       size: pagination.value.pageSize,
     })
-    data.value = rows
+    data.value = list
     pagination.value = {
       ...pagination.value,
       total,
@@ -207,7 +205,6 @@ const confirmBody = computed(() => {
 })
 
 onMounted(() => {
-  fetchTag()
   fetchData()
 })
 
@@ -220,7 +217,7 @@ const resetIdx = () => {
 const onConfirmDelete = async () => {
   // 真实业务请发起请求
   if (chooseId.value !== -1) {
-    await storyDel(chooseId.value)
+    await miniAppDel(chooseId.value)
     fetchData()
     MessagePlugin.success('删除成功')
     confirmVisible.value = false
@@ -250,9 +247,6 @@ const rehandleChange = () => {
  */
 const handleAdd = async () => {
   handleType.value = 'add'
-  if (tags.value.length === 0) {
-    await fetchTag()
-  }
   handleVisible.value = true
 }
 const handleClickDelete = (row: { row: any; rowIndex: any }) => {
@@ -261,12 +255,9 @@ const handleClickDelete = (row: { row: any; rowIndex: any }) => {
 }
 const handleClickEdit = async (row: { row: any; rowIndex: any }) => {
   handleType.value = 'edit'
-  if (tags.value.length === 0) {
-    await fetchTag()
-  }
   chooseId.value = row.row.id
   queryForm.id = Number(chooseId.value)
-  storyDetail(chooseId.value).then(res => {
+  miniAppDetail(chooseId.value).then(res => {
     for (const resKey in res) {
       queryForm[resKey] = res[resKey]
     }

@@ -49,6 +49,12 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       host: '0.0.0.0',
       proxy: {
         '/api': 'https://admin.beer-ui.com',
+        '/api-cms': 'https://admin.beer-ui.com',
+        // '/api-cms': {
+        //   target: 'http://localhost:3101',
+        //   changeOrigin: true,
+        //   rewrite: path => path.replace(/^\/api-cms/, ''),
+        // },
       },
     },
   }
