@@ -119,18 +119,25 @@ const getTagName = id => {
   if (findIdx(id) < 0) return '-'
   return tags.value[findIdx(id)].name
 }
+interface QueryForm {
+  title: string
+  content: string
+  tag: number
+  id?: number
+}
 const queryForm = reactive({
   title: '',
-  section: [],
-  answer: '',
+  content: '',
   tag: '',
-})
+} as unknown as QueryForm)
 const FORM_RULES = {
   title: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
   content: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],
   tag: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],
 }
-const onReset = () => {}
+const onReset = () => {
+  console.log('reset')
+}
 const onSubmit = ({ validateResult }) => {
   if (validateResult === true) {
     if (handleType.value === 'add') {
@@ -145,14 +152,7 @@ const onSubmit = ({ validateResult }) => {
         })
     }
     if (handleType.value === 'edit') {
-      const section = queryForm.section.map(el => {
-        return { name: el.name }
-      })
-      const query = {
-        ...queryForm,
-        section,
-      }
-      storyUpdate(query)
+      storyUpdate(queryForm)
         .then(res => {
           MessagePlugin.success('更新成功')
           handleVisible.value = false
@@ -164,12 +164,6 @@ const onSubmit = ({ validateResult }) => {
   }
 }
 const data = ref([])
-const addAnswer = () => {
-  queryForm.section.push({ name: '' })
-}
-const delAnswer = index => {
-  queryForm.section.splice(index, 1)
-}
 const pagination = ref({
   defaultPageSize: 20,
   pageSize: 20,

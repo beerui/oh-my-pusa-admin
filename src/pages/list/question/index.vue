@@ -149,12 +149,19 @@ const getTagName = id => {
   if (findIdx(id) < 0) return '-'
   return tags.value[findIdx(id)].name
 }
+interface QueryForm {
+  title: string
+  section: any
+  answer: string
+  tag: string
+  id?: number
+}
 const queryForm = reactive({
   title: '',
   section: [],
   answer: '',
   tag: '',
-})
+} as unknown as QueryForm)
 const FORM_RULES = {
   title: [{ required: true, message: '此项必填', type: 'error', trigger: 'blur' }],
   section: [{ required: true, message: '此项必选', type: 'error', trigger: 'blur' }],

@@ -121,6 +121,17 @@ import { miniAppAdd, miniAppDel, miniAppDetail, miniAppList, miniAppUpdate } fro
 
 const store = useSettingStore()
 
+interface QueryForm {
+  appId: string
+  miniAppId: string
+  miniAppSecret: string
+  name: string
+  descr: string
+  email: string
+  version: string
+  officialSite: string
+  id?: number
+}
 const queryForm = reactive({
   appId: '',
   miniAppId: '',
@@ -130,7 +141,7 @@ const queryForm = reactive({
   email: '',
   version: '',
   officialSite: '',
-})
+} as unknown as QueryForm)
 const FORM_RULES = {
   appId: [{ required: true }],
   miniAppId: [{ required: true }],
